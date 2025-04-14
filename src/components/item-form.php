@@ -96,7 +96,7 @@ $locations = $locationModel->getLocations($userId);
     </div>
 
     <div class="form-actions">
-        <button type="button" class="btn" onclick="location.href='/items.php'">Cancel</button>
+        <button type="button" class="btn" id="cancelItemForm">Cancel</button>
         <button type="submit" class="btn btn-primary">
             <?php echo $item ? 'Update Item' : 'Add Item'; ?>
         </button>
@@ -104,6 +104,11 @@ $locations = $locationModel->getLocations($userId);
 </form>
 
 <script>
+    // Add event listener for the new Cancel button ID
+    document.getElementById('cancelItemForm').addEventListener('click', () => {
+        location.href = '/items.php';
+    });
+
     // Handle tags input with autocomplete
     const tagsInput = document.getElementById('tagsInput');
     const tagInput = document.getElementById('tagInput');
