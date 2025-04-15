@@ -43,14 +43,6 @@ $locations = $locationModel->getLocations($userId);
             }
         })();
     </script>
-    <style>
-        html.sidebar-collapsed-root .sidebar {
-            width: 60px !important;
-        }
-        html.sidebar-collapsed-root .container {
-            grid-template-columns: 60px 1fr !important;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
