@@ -171,6 +171,12 @@ body {
     font-size: 1.2rem;
     min-width: 24px;
     text-align: center;
+    /* Use the category color if available, otherwise use default text color */
+    color: var(--category-color, var(--color-text));
+}
+
+.sidebar-item.active i {
+    color: white;
 }
 
 .sidebar-item span {
@@ -542,6 +548,29 @@ body {
 .btn-primary:hover {
     background: linear-gradient(45deg, var(--color-primary-dark), var(--color-primary));
     box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+}
+
+/* Theme Picker Styles */
+.theme-picker {
+    display: flex; 
+    align-items: center;
+    cursor: pointer;
+    padding: var(--spacing-sm); 
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-speed) var(--transition-timing);
+    margin-right: var(--spacing-sm); /* Add space between picker and button */
+}
+
+.theme-picker:hover {
+    background-color: var(--color-surface); /* Subtle hover */
+}
+
+.theme-color-indicator {
+    width: 24px;  
+    height: 24px; 
+    border-radius: var(--radius-sm); 
+    border: 1px solid var(--color-border); 
+    /* Background color will be set by JavaScript */
 }
 
 /* Card Component */

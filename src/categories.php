@@ -84,6 +84,11 @@ $categories = $categoryModel->getCategories($userId);
                     <h1>Categories</h1>
                 </div>
                 <div class="actions">
+                    <!-- Theme Picker -->
+                    <div class="theme-picker" title="Change Theme Color">
+                        <div class="theme-color-indicator"></div>
+                        <input type="color" class="color-input" style="visibility: hidden; width: 0; height: 0; position: absolute;">
+                    </div>
                     <button class="btn btn-primary" onclick="openCategoryModal()">
                         <i class="fas fa-plus"></i>
                         <span>Add Category</span>
@@ -178,6 +183,8 @@ $categories = $categoryModel->getCategories($userId);
     </div>
 
     <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/categories.js"></script>
+    <script src="/assets/js/theme.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Set up form submission handler

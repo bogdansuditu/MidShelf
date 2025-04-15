@@ -91,6 +91,11 @@ $locations = $locationModel->getLocations($userId);
                     <h1>Welcome, <?php echo htmlspecialchars($username); ?></h1>
                 </div>
                 <div class="actions">
+                    <!-- Theme Picker -->
+                    <div class="theme-picker" title="Change Theme Color">
+                        <div class="theme-color-indicator"></div>
+                        <input type="color" class="color-input" style="visibility: hidden; width: 0; height: 0; position: absolute;">
+                    </div>
                     <button class="btn btn-primary" onclick="location.href='/items.php?action=new'">
                         <i class="fas fa-plus"></i>
                         <span>Add Item</span>
@@ -248,5 +253,6 @@ $locations = $locationModel->getLocations($userId);
     </div>
 
     <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/theme.js"></script>
 </body>
 </html>
