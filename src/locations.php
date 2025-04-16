@@ -34,14 +34,6 @@ $locations = $locationModel->getLocations($userId);
             }
         })();
     </script>
-    <style>
-        html.sidebar-collapsed-root .sidebar {
-            width: 60px !important;
-        }
-        html.sidebar-collapsed-root .container {
-            grid-template-columns: 60px 1fr !important;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -70,6 +62,10 @@ $locations = $locationModel->getLocations($userId);
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Locations</span>
                     </a>
+                    <a href="/settings.php" class="sidebar-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
                 </div>
             </nav>
         </aside>
@@ -84,11 +80,6 @@ $locations = $locationModel->getLocations($userId);
                     <h1>Locations</h1>
                 </div>
                 <div class="actions">
-                    <!-- Theme Picker -->
-                    <div class="theme-picker" title="Change Theme Color">
-                        <div class="theme-color-indicator"></div>
-                        <input type="color" class="color-input" style="visibility: hidden; width: 0; height: 0; position: absolute;">
-                    </div>
                     <button class="btn btn-primary" onclick="openLocationModal()">
                         <i class="fas fa-plus"></i>
                         <span>Add Location</span>

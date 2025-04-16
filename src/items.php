@@ -39,14 +39,6 @@ $items = $itemModel->getItems($userId, $categoryId);
             }
         })();
     </script>
-    <style>
-        html.sidebar-collapsed-root .sidebar {
-            width: 60px !important;
-        }
-        html.sidebar-collapsed-root .container {
-            grid-template-columns: 60px 1fr !important;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -81,6 +73,10 @@ $items = $itemModel->getItems($userId, $categoryId);
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Locations</span>
                     </a>
+                    <a href="/settings.php" class="sidebar-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
                 </div>
             </nav>
         </aside>
@@ -101,11 +97,6 @@ $items = $itemModel->getItems($userId, $categoryId);
                     </h1>
                 </div>
                 <div class="actions">
-                    <!-- Theme Picker -->
-                    <div class="theme-picker" title="Change Theme Color">
-                        <div class="theme-color-indicator"></div>
-                        <input type="color" class="color-input" style="visibility: hidden; width: 0; height: 0; position: absolute;">
-                    </div>
                     <button class="btn btn-primary" onclick="location.href='/items.php?action=new'">
                         <i class="fas fa-plus"></i>
                         <span>Add Item</span>

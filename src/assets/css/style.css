@@ -550,37 +550,16 @@ body {
     box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
 }
 
-/* Theme Picker Styles */
-.theme-picker {
-    display: flex; 
-    align-items: center;
-    cursor: pointer;
-    padding: var(--spacing-sm); 
-    border-radius: var(--radius-md);
-    transition: background-color var(--transition-speed) var(--transition-timing);
-    margin-right: var(--spacing-sm); /* Add space between picker and button */
-}
-
-.theme-picker:hover {
-    background-color: var(--color-surface); /* Subtle hover */
-}
-
-.theme-color-indicator {
-    width: 24px;  
-    height: 24px; 
-    border-radius: var(--radius-sm); 
-    border: 1px solid var(--color-border); 
-    /* Background color will be set by JavaScript */
-}
-
 /* Card Component */
 .card {
     background-color: var(--color-surface-raised);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
-    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-md);
     border: 1px solid var(--color-border);
-    margin: var(--spacing-lg);
+    transition: all var(--transition-speed) var(--transition-timing);
+    position: relative;
+    overflow: hidden;
 }
 
 /* Modern Top Bar */
