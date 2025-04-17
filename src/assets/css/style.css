@@ -67,7 +67,7 @@ body {
     background: linear-gradient(to bottom right, var(--color-background), var(--color-surface));
 }
 
-.container.sidebar-collapsed {
+html.sidebar-collapsed-root .container {
     grid-template-columns: 80px 1fr;
 }
 
@@ -84,11 +84,9 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-.sidebar.collapsed {
+html.sidebar-collapsed-root .sidebar {
     width: 80px;
-    padding-left: var(--spacing-sm);
-    padding-right: var(--spacing-sm);
-    overflow: visible;
+    overflow: hidden; /* Hide text overflow */
 }
 
 .sidebar a {
@@ -119,32 +117,21 @@ body {
 }
 
 /* Collapsed Logo Styles */
-.sidebar.collapsed .logo {
-    justify-content: center; 
-    align-items: center; 
-    margin-bottom: var(--spacing-lg); 
-    padding: 0; 
-    height: auto; /* State after Step 520 */
+html.sidebar-collapsed-root .sidebar .logo {
+    padding: var(--spacing-lg) var(--spacing-md);
+    justify-content: center;
 }
 
-.sidebar.collapsed .logo i {
-    display: inline-block; 
-    margin: 0; 
-    font-size: 1.8rem; 
-    width: auto; 
-    height: auto; 
-    color: var(--color-primary); /* State after Step 528 */
+html.sidebar-collapsed-root .sidebar .logo i {
+    font-size: 1.5rem; /* Slightly larger icon when collapsed */
+    margin-right: 0;
 }
 
-.sidebar.collapsed .logo span {
-    display: none !important; 
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    opacity: 0;
-    visibility: hidden; /* State after Step 513 */
+html.sidebar-collapsed-root .sidebar .logo span {
+    display: none; /* Hide text when collapsed */
 }
 
+/* Collapsed Sidebar Styles */
 .sidebar-item {
     display: flex;
     align-items: center;
@@ -157,14 +144,44 @@ body {
     margin-bottom: var(--spacing-sm);
 }
 
+/* General hover effect for sidebar items (expanded) */
 .sidebar-item:hover {
-    background-color: rgba(139, 92, 246, 0.1);
+    background-color: var(--color-surface-hover);
     transform: translateX(4px);
 }
 
+/* General active effect for sidebar items (expanded) */
 .sidebar-item.active {
     background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
     color: white;
+}
+
+/* Ensure icon color is white for active item in expanded state */
+.sidebar-item.active i {
+    color: white;
+}
+
+
+html.sidebar-collapsed-root .sidebar .sidebar-item span,
+html.sidebar-collapsed-root .sidebar .sidebar-section h3 {
+    display: none;
+}
+
+html.sidebar-collapsed-root .sidebar .sidebar-item {
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+html.sidebar-collapsed-root .sidebar .sidebar-item:hover {
+    background-color: var(--color-surface-hover);
+}
+
+html.sidebar-collapsed-root .sidebar .sidebar-item.active {
+    background-color: var(--color-primary-muted);
+}
+
+html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
+    color: var(--color-primary);
 }
 
 .sidebar-item i {
@@ -195,33 +212,6 @@ body {
     color: var(--color-text-tertiary);
     margin-bottom: var(--spacing-md);
     padding-left: var(--spacing-md);
-}
-
-.sidebar.collapsed .sidebar-item span,
-.sidebar.collapsed .sidebar-section h3 {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.1s ease-out;
-}
-
-.sidebar.collapsed .sidebar-item {
-    justify-content: center;
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.sidebar.collapsed .sidebar-item:hover {
-    transform: none;
-    background-color: rgba(139, 92, 246, 0.15);
-}
-
-.sidebar.collapsed .sidebar-item.active {
-    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
-    color: white;
-}
-
-.sidebar.collapsed .sidebar-item.active i {
-    color: var(--color-primary);
 }
 
 /* Main Content */
