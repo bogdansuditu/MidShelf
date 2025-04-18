@@ -138,16 +138,14 @@ $items = $itemModel->getItems($userId, $categoryId);
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($items as $item): ?>
-                                        <tr data-id="<?php echo $item['id']; ?>">
+                                        <tr>
                                             <td>
-                                                <div class="item-name">
-                                                    <span><?php echo htmlspecialchars($item['name']); ?></span>
+                                                <a class="item-cell-link" href="/items.php?action=edit&id=<?php echo $item['id']; ?>">
+                                                    <div class="item-main-name"><?php echo htmlspecialchars($item['name']); ?></div>
                                                     <?php if ($item['description']): ?>
-                                                        <small class="item-description-tooltip" title="<?php echo htmlspecialchars($item['description']); ?>">
-                                                            <?php echo htmlspecialchars(substr($item['description'], 0, 50)) . (strlen($item['description']) > 50 ? '...' : ''); ?>
-                                                        </small>
+                                                        <div class="item-description"><?php echo htmlspecialchars(substr($item['description'], 0, 50)) . (strlen($item['description']) > 50 ? '...' : ''); ?></div>
                                                     <?php endif; ?>
-                                                </div>
+                                                </a>
                                             </td>
                                             <td>
                                                 <?php if ($item['category_name']): ?>
@@ -167,12 +165,15 @@ $items = $itemModel->getItems($userId, $categoryId);
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <div class="rating">
-                                                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                        <i class="fas fa-star <?php echo $i <= ($item['rating'] ?? 0) ? 'active' : ''; ?>"></i>
-                                                    <?php endfor; ?>
-                                                </div>
-                                            </td>
+    <div class="rating">
+        <?php for ($i = 1; $i <= (int)$item['rating']; $i++): ?>
+            <i class="fas fa-star"></i>
+        <?php endfor; ?>
+        <?php for ($i = (int)$item['rating'] + 1; $i <= 5; $i++): ?>
+            <i class="far fa-star"></i>
+        <?php endfor; ?>
+    </div>
+</td>
                                             <td>
                                                 <div class="tags">
                                                     <?php if (!empty($item['tags'])): ?>
@@ -205,5 +206,6 @@ $items = $itemModel->getItems($userId, $categoryId);
 
     <script src="/assets/js/app.js"></script>
     <script src="/assets/js/theme.js"></script>
+
 </body>
 </html>

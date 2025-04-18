@@ -376,7 +376,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 }
 
 .item-rating i.active {
-    color: #fbbf24;
+    color: var(--color-accent, #a259ff) !important;
 }
 
 .item-tags {
@@ -391,6 +391,13 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     padding: 2px 8px;
     border-radius: var(--radius-sm);
     font-size: 0.75rem;
+}
+
+.rating .far.fa-star {
+  opacity: 0.5;
+}
+.rating .fas.fa-star {
+  opacity: 1;
 }
 
 /* Empty State */
@@ -427,16 +434,143 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 
 /* Item Form */
 .item-form {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-lg);
-    max-width: 600px;
-    margin: 0 auto;
+    width: 90%;
+    min-width: 320px;
+    max-width: 1400px;
+    margin: 3.5rem auto;
+    background: var(--color-surface-raised, #232323);
+    border-radius: var(--radius-lg);
+    padding: 48px 40px;
+    box-shadow: 0 2px 32px 0 rgba(80,60,180,0.10);
+    min-height: calc(100vh - 7rem);
+    justify-content: flex-start;
 }
+
+@media (max-width: 700px) {
+  .item-form {
+    width: 98%;
+    padding: var(--spacing-lg) var(--spacing-md);
+    max-width: 98vw;
+    min-height: calc(100vh - 4rem);
+  }
+}
+
+@media (max-width: 700px) {
+  .item-form {
+    width: 98%;
+    padding: var(--spacing-lg) var(--spacing-md);
+    max-width: 98vw;
+  }
+}
+
+.item-form .form-group,
+.item-form label,
+.item-form input,
+.item-form textarea,
+.item-form select,
+.item-form .tags-input,
+.item-form .rating-input {
+    width: 100%;
+    box-sizing: border-box;
+    align-self: stretch;
+}
+
+.item-form input,
+.item-form textarea,
+.item-form select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    display: block;
+}
+
+.item-form .tags-input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.item-form .rating-input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    justify-content: flex-start;
+} 
+
+.item-form .form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+    width: 100%;
+}
+
+.item-form .btn,
+.item-form .btn-primary,
+.item-form .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: auto;
+    min-width: 120px;
+    box-sizing: border-box;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
+
+@media (max-width: 500px) {
+  .item-form .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .item-form .btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+.item-form .btn,
+.item-form .btn-primary,
+.item-form .btn-secondary {
+    width: auto;
+    min-width: 120px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+}
+
+.item-form .btn,
+.item-form .btn-secondary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+@media (max-width: 500px) {
+  .item-form .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .item-form .btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
 
 .form-group {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: var(--spacing-md);
 }
 
 .form-group label {
@@ -495,6 +629,8 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     border-radius: var(--radius-md);
     padding: var(--spacing-sm);
     min-height: 42px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .tags-input input {
@@ -506,6 +642,8 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     padding: var(--spacing-sm);
     flex: 1;
     min-width: 120px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .tags-input .tag {
@@ -538,22 +676,28 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 .rating-input button {
     background: none;
     border: none;
-    padding: var(--spacing-sm);
+    padding: 0;
+    margin: 0;
     cursor: pointer;
     transition: transform var(--transition-speed);
+    box-shadow: none;
 }
 
-.rating-input button i {
+.rating-input button i, .star {
     font-size: 1.25rem;
-    color: var(--color-text-tertiary);
+    color: #fff !important;
+    transition: color 0.18s, transform var(--transition-speed);
 }
 
-.rating-input button:hover {
+.rating-input button.active i,
+.rating-input button:hover i,
+.rating-input button:focus i {
+    color: var(--color-accent, #a259ff);
+}
+
+.rating-input button:hover i,
+.rating-input button:focus i {
     transform: scale(1.2);
-}
-
-.rating-input button.active i {
-    color: #fbbf24;
 }
 
 /* Buttons */
@@ -603,16 +747,9 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
 }
 
-/* Card Component */
+/* Card Component (Cleaned Up) */
 .card {
-    background-color: var(--color-surface-raised);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-md);
-    border: 1px solid var(--color-border);
-    transition: all var(--transition-speed) var(--transition-timing);
-    position: relative;
-    overflow: hidden;
+    cursor: pointer;
     background: linear-gradient(145deg, var(--color-surface), var(--color-surface-raised));
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
@@ -621,12 +758,16 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     transition: all var(--transition-speed) var(--transition-timing);
     position: relative;
     overflow: hidden;
+    color: rgba(255,255,255,0.88);
+    text-decoration: none;
 }
 
 .card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     border-color: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
 }
 
 .card::before {
@@ -644,6 +785,143 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 .card:hover::before {
     opacity: 1;
 }
+
+/* Item Edit Form Consistent Styles */
+
+
+.item-form label {
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--color-text-secondary, #666);
+  margin-bottom: 0.4em;
+  letter-spacing: 0.01em;
+}
+
+.item-form input,
+.item-form textarea,
+.item-form select,
+.item-form label {
+  font-family: inherit;
+}
+.item-form input,
+.item-form textarea,
+.item-form select {
+  width: 100%;
+  font-size: 1em;
+  color: var(--color-text, #222);
+  background: var(--color-surface-raised, #fff);
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: var(--radius-sm, 6px);
+  padding: 0.6em 0.9em;
+  margin: 0;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.item-form input:focus,
+.item-form textarea:focus,
+.item-form select:focus {
+  border-color: var(--color-primary, #6c47ff);
+  box-shadow: 0 0 0 2px var(--color-primary-muted, #e4e0fa);
+}
+
+
+.item-form .btn-secondary {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+/* Minimal neutral button for tag remove and rating */
+.tags-input .tag button,
+.rating-input button {
+    background: none !important;
+    border: none !important;
+    color: var(--color-text-tertiary) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: color 0.18s;
+}
+.rating-input button i {
+    font-size: 1.25rem;
+    color: var(--color-text-tertiary);
+    transition: color 0.18s, transform var(--transition-speed);
+}
+.rating-input button.active i {
+    color: var(--color-accent, #a259ff) !important;
+}
+.rating-input button:hover i,
+.rating-input button:focus i {
+    color: var(--color-accent);
+    transform: scale(1.2);
+}
+.tags-input .tag button:hover {
+    color: var(--color-accent);
+}
+
+/* Removed orphaned properties that caused syntax errors. All button styling is now handled by .btn, .btn-primary, .btn-secondary as above. */
+
+
+
+
+.item-form button:hover,
+.item-form .btn:hover {
+  background: var(--color-accent, #8257e6);
+  box-shadow: 0 2px 12px 0 rgba(80,60,180,0.07);
+}
+
+.item-form .btn-secondary {
+  background: var(--color-surface, #f5f5fa);
+  color: var(--color-primary, #6c47ff);
+  border: 1px solid var(--color-border, #ddd);
+}
+
+.item-form .btn-secondary:hover {
+  background: var(--color-surface-hover, #ececff);
+  color: var(--color-accent, #8257e6);
+}
+
+/* Clickable Table Row - removed, now only Name is clickable */
+
+/* Name cell clickable and visually separated */
+.item-cell-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding: 0.25em 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background 0.18s, box-shadow 0.18s;
+}
+.item-cell-link:hover, .item-cell-link:focus-visible {
+  background: var(--color-surface-hover);
+  box-shadow: 0 2px 12px 0 rgba(80,60,180,0.07);
+  outline: none;
+  cursor: pointer;
+}
+.item-main-name {
+  font-size: 1.08em;
+  font-weight: 700;
+  color: var(--color-text, #222);
+  margin-bottom: 2px;
+}
+.item-description {
+  font-size: 0.93em;
+  color: var(--color-text-secondary, #666);
+  margin-top: 1px;
+  line-height: 1.3;
+}
+.item-cell-link:hover .item-main-name,
+.item-cell-link:focus-visible .item-main-name {
+  color: var(--color-text, #222);
+}
+
 
 /* Modern Top Bar */
 .top-bar {
@@ -907,44 +1185,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     -webkit-text-fill-color: transparent;
 }
 
-/* Enhanced Cards */
-.card {
-    background: linear-gradient(145deg, var(--color-surface), var(--color-surface-raised));
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-md);
-    border: 1px solid var(--color-border);
-    transition: all var(--transition-speed) var(--transition-timing);
-    position: relative;
-    overflow: hidden;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--color-primary), transparent);
-    opacity: 0;
-    transition: opacity var(--transition-speed) var(--transition-timing);
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-border);
-}
-
-.card:hover::before {
-    opacity: 1;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-}
-
 /* Modern Buttons */
 .btn {
     padding: var(--spacing-sm) var(--spacing-lg);
@@ -1066,7 +1306,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 }
 
 .star.active {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 
 /* Tags */
@@ -1121,7 +1361,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--spacing-xs);
-    margin-bottom: var(--spacing-lg);
+    margin: var(--spacing-lg);
 }
 
 /* Empty state styling for cards grid */

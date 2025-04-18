@@ -116,12 +116,12 @@ $locations = $locationModel->getLocations($userId);
                     <div class="cards-grid">
                         <?php if (!empty($categories)): ?>
                             <?php foreach ($categories as $category): ?>
-                                <div class="card">
+                                <a class="card" href="/items.php?category=<?php echo urlencode($category['id']); ?>">
                                     <div class="card-header">
                                         <i class="<?php echo htmlspecialchars($category['icon'] ?? 'fas fa-folder'); ?>" style="color: <?php echo htmlspecialchars($category['color'] ?? '#ccc'); ?>"></i>
                                         <h3><?php echo htmlspecialchars($category['name']); ?></h3>
                                     </div>
-                                </div>
+                                </a>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="empty-state">
@@ -207,8 +207,11 @@ $locations = $locationModel->getLocations($userId);
                                         </td>
                                         <td>
                                             <div class="rating">
-                                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                    <i class="fas fa-star <?php echo $i <= ($item['rating'] ?? 0) ? 'active' : ''; ?>"></i>
+                                                <?php for ($i = 1; $i <= (int)$item['rating']; $i++): ?>
+                                                    <i class="fas fa-star"></i>
+                                                <?php endfor; ?>
+                                                <?php for ($i = (int)$item['rating'] + 1; $i <= 5; $i++): ?>
+                                                    <i class="far fa-star"></i>
                                                 <?php endfor; ?>
                                             </div>
                                         </td>
