@@ -22,7 +22,7 @@ $itemModel = new Item();
 $categoryModel = new Category();
 $locationModel = new Location();
 
-$items = $itemModel->getItems($userId);
+$items = $itemModel->getItems($userId, null, 10); // Pass null for categoryId and 10 for limit
 $categories = $categoryModel->getCategories($userId);
 $locations = $locationModel->getLocations($userId);
 ?>

@@ -165,15 +165,15 @@ $items = $itemModel->getItems($userId, $categoryId);
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-    <div class="rating">
-        <?php for ($i = 1; $i <= (int)$item['rating']; $i++): ?>
-            <i class="fas fa-star"></i>
-        <?php endfor; ?>
-        <?php for ($i = (int)$item['rating'] + 1; $i <= 5; $i++): ?>
-            <i class="far fa-star"></i>
-        <?php endfor; ?>
-    </div>
-</td>
+                                            <div class="rating">
+                                                <?php for ($i = 1; $i <= (int)$item['rating']; $i++): ?>
+                                                    <i class="fas fa-star"></i>
+                                                <?php endfor; ?>
+                                                <?php for ($i = (int)$item['rating'] + 1; $i <= 5; $i++): ?>
+                                                    <i class="far fa-star"></i>
+                                                <?php endfor; ?>
+                                            </div>
+                                        </td>
                                             <td>
                                                 <div class="tags">
                                                     <?php if (!empty($item['tags'])): ?>

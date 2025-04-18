@@ -84,15 +84,23 @@ $locations = $locationModel->getLocations($userId);
 
     <div class="form-group">
         <label for="rating">Rating</label>
-        <div class="rating-input" id="ratingInput">
-            <?php for ($i = 1; $i <= 5; $i++): ?>
-                <button type="button" class="<?php echo $item && $item['rating'] >= $i ? 'active' : ''; ?>"
+        <div class="rating-input rating" id="ratingInput">
+            <?php
+            // Add the 'rating' class here to ensure existing CSS rules apply
+            $current_rating = $item ? (int)$item['rating'] : 0;
+            for ($i = 1; $i <= 5; $i++):
+                // Determine the correct Font Awesome class for the icon
+                $icon_class = ($i <= $current_rating) ? 'fas fa-star' : 'far fa-star';
+                // Keep the active class on the button in case JS uses it
+                $button_class = ($i <= $current_rating) ? 'active' : '';
+            ?>
+                <button type="button" class="<?php echo $button_class; ?>"
                         onclick="setRating(<?php echo $i; ?>)">
-                    <i class="fas fa-star"></i>
+                    <i class="<?php echo $icon_class; ?>"></i>
                 </button>
             <?php endfor; ?>
         </div>
-        <input type="hidden" name="rating" id="ratingHidden" value="<?php echo $item ? $item['rating'] : '0'; ?>">
+        <input type="hidden" name="rating" id="ratingHidden" value="<?php echo $current_rating; ?>">
     </div>
 
     <div class="form-actions">
@@ -235,13 +243,27 @@ $locations = $locationModel->getLocations($userId);
         }
     });
 
-    // Handle rating input
-    function setRating(value) {
-        document.getElementById('ratingHidden').value = value;
-        const stars = document.querySelectorAll('#ratingInput button');
+    // Function to set the rating and update stars visually
+    function setRating(rating) {
+        document.getElementById('ratingHidden').value = rating;
+        const stars = document.querySelectorAll('#ratingInput button i');
         stars.forEach((star, index) => {
-            star.classList.toggle('active', index < value);
+            if (index < rating) {
+                star.className = 'fas fa-star'; // Filled star
+            } else {
+                star.className = 'far fa-star'; // Empty star
+            }
         });
+        
+        // Optionally: update button active class if needed elsewhere
+        const buttons = document.querySelectorAll('#ratingInput button');
+        buttons.forEach((button, index) => {
+             if (index < rating) {
+                 button.classList.add('active');
+             } else {
+                 button.classList.remove('active');
+             }
+         });
     }
 
     // Handle form submission

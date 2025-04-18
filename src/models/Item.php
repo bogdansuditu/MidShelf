@@ -8,7 +8,7 @@ class Item {
         $this->db = Database::getInstance();
     }
 
-    public function getItems($userId, $categoryId = null) {
+    public function getItems($userId, $categoryId = null, $limit = null) {
         $sql = "
             SELECT 
                 i.*,
@@ -32,6 +32,11 @@ class Item {
         }
 
         $sql .= " GROUP BY i.id ORDER BY i.created_at DESC";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT ?";
+            $params[] = (int)$limit;
+        }
 
         try {
             $items = $this->db->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);

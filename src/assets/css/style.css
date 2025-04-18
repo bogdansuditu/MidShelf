@@ -328,12 +328,21 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all var(--transition-speed) var(--transition-timing);
+    padding: var(--spacing-xs);
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-speed) var(--transition-timing);
 }
 
 .btn-icon:hover {
     color: var(--color-text);
     background-color: var(--color-surface);
 }
+
+
 
 .item-card-content {
     color: var(--color-text-secondary);
@@ -563,19 +572,24 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
   }
 }
 
-
+/* Modern Forms */
 .form-group {
+    margin-bottom: var(--spacing-lg);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
     width: 100%;
     max-width: 100%;
-    margin-bottom: var(--spacing-md);
 }
 
 .form-group label {
     font-weight: 500;
     color: var(--color-text);
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
 }
 
 .form-group input[type="text"],
@@ -605,11 +619,11 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 
 .form-group select {
     appearance: none;
-    padding-right: var(--spacing-xl);
+    /* padding-right: var(--spacing-xl); */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238B5CF6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right var(--spacing-md) center;
-    background-size: 16px;
+    /* background-size: 16px; */
 }
 
 .form-actions {
@@ -617,6 +631,38 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     justify-content: flex-end;
     gap: var(--spacing-md);
     margin-top: var(--spacing-xl);
+}
+
+
+.form-control {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    font-size: 1rem;
+    transition: all var(--transition-speed) var(--transition-timing);
+    outline: none;
+}
+
+.form-control:hover {
+    border-color: var(--color-primary-dark);
+}
+
+.form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    background-color: var(--color-surface-raised);
+}
+
+.form-control::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
 }
 
 /* Tags Input */
@@ -685,14 +731,16 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 
 .rating-input button i, .star {
     font-size: 1.25rem;
-    color: #fff !important;
-    transition: color 0.18s, transform var(--transition-speed);
+    color: var(--color-accent, #a259ff) !important; /* Use accent color */
+    opacity: 0.5; /* Default to 50% opacity */
+    transition: color 0.18s, transform var(--transition-speed), opacity 0.18s;
 }
 
 .rating-input button.active i,
 .rating-input button:hover i,
 .rating-input button:focus i {
     color: var(--color-accent, #a259ff);
+    opacity: 1; /* Set opacity to 1 for active/hover/focus */
 }
 
 .rating-input button:hover i,
@@ -765,7 +813,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 .card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    border-color: var(--color-primary);
     color: #fff;
     text-decoration: none;
 }
@@ -930,8 +977,17 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     transition: background 0.3s, box-shadow 0.3s, backdrop-filter 0.3s;
     backdrop-filter: blur(4px);
     position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--color-surface-raised);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
     top: 0;
-    z-index: 10;
+    z-index: 100;
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--radius-lg);
 }
 
 .top-bar:hover {
@@ -944,13 +1000,17 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     background: transparent;
     border: none;
     outline: none;
-    color: var(--color-primary);
     font-size: 1.5rem;
     transition: color 0.18s, transform 0.18s, box-shadow 0.18s;
     margin-right: var(--spacing-lg);
     cursor: pointer;
     border-radius: 50%;
-    padding: 0.5em;
+    padding: var(--spacing-sm);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-speed) var(--transition-timing);
+    margin-right: var(--spacing-md);
 }
 
 .top-bar .toggle-sidebar:hover,
@@ -961,20 +1021,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     transform: scale(1.12) rotate(-8deg);
 }
 
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--spacing-lg) var(--spacing-xl);
-    background-color: var(--color-surface-raised);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--color-border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    margin-bottom: var(--spacing-lg);
-    border-radius: var(--radius-lg);
-}
+
 
 .top-bar h1 {
     font-size: 1.5rem;
@@ -991,23 +1038,9 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     gap: var(--spacing-md);
 }
 
-.top-bar .toggle-sidebar {
-    padding: var(--spacing-sm);
-    background: transparent;
-    border: none;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: all var(--transition-speed) var(--transition-timing);
-    margin-right: var(--spacing-md);
-}
-
-.top-bar .toggle-sidebar:hover {
-    color: var(--color-text);
-    transform: scale(1.1);
-}
-
 /* Table Styles */
-.table-container {
+.table-container,
+.settings-section {
     background-color: var(--color-surface);
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-border);
@@ -1040,21 +1073,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 .table-actions {
     display: flex;
     gap: var(--spacing-xs);
-}
-
-.btn-icon {
-    padding: var(--spacing-xs);
-    border: none;
-    background: transparent;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-speed) var(--transition-timing);
-}
-
-.btn-icon:hover {
-    color: var(--color-text);
-    background-color: var(--color-surface);
 }
 
 .category-name,
@@ -1111,10 +1129,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     font-size: 1.25rem;
     font-weight: 600;
     margin: 0;
-}
-
-.form-group {
-    margin-bottom: var(--spacing-lg);
 }
 
 .form-group label {
@@ -1247,50 +1261,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 
 .btn-primary:hover {
     background-color: var(--color-primary-light);
-}
-
-/* Modern Forms */
-.form-group {
-    margin-bottom: var(--spacing-lg);
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: var(--spacing-sm);
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    font-size: 0.875rem;
-}
-
-.form-control {
-    width: 100%;
-    padding: var(--spacing-md);
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background-color: var(--color-surface);
-    color: var(--color-text);
-    font-size: 1rem;
-    transition: all var(--transition-speed) var(--transition-timing);
-    outline: none;
-}
-
-.form-control:hover {
-    border-color: var(--color-primary-dark);
-}
-
-.form-control:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-    background-color: var(--color-surface-raised);
-}
-
-.form-control::placeholder {
-    color: var(--color-text-tertiary);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--color-primary);
 }
 
 /* Star Rating */
