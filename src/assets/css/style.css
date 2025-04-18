@@ -77,7 +77,6 @@ html.sidebar-collapsed-root .container {
     backdrop-filter: blur(12px);
     width: 280px;
     transition: all var(--transition-speed) var(--transition-timing);
-    overflow: hidden;
     padding: var(--spacing-lg);
     border-right: 1px solid var(--color-border);
     position: relative;
@@ -148,7 +147,20 @@ html.sidebar-collapsed-root .sidebar .logo span {
     margin-bottom: var(--spacing-sm);
     box-shadow: 0 1px 2px 0 rgba(80,60,180,0.04);
     position: relative;
-    overflow: hidden;
+}
+
+.sidebar-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-primary), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-speed) var(--transition-timing);
+    /* Ensure it's above the background but below content */
+    z-index: 0; 
 }
 
 .sidebar-item:focus-visible {
@@ -159,9 +171,15 @@ html.sidebar-collapsed-root .sidebar .logo span {
 
 /* Animated hover effect for sidebar items (expanded) */
 .sidebar-item:hover {
+    /* Make the glow visible on hover */
+    /* opacity is handled by the ::before:hover rule below */
     background-color: var(--color-surface-hover);
-    transform: translateX(6px) scale(1.03);
-    box-shadow: 0 4px 16px -4px var(--color-primary-muted), 0 1.5px 6px 0 rgba(80,60,180,0.09);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.sidebar-item:hover::before {
+    opacity: 1;
 }
 
 /* Animated active effect for sidebar items (expanded) */
@@ -185,25 +203,6 @@ html.sidebar-collapsed-root .sidebar .logo span {
     transform: scale(1.15) rotate(-8deg);
     filter: drop-shadow(0 0 4px var(--color-primary-muted));
 }
-
-
-/* General hover effect for sidebar items (expanded) */
-.sidebar-item:hover {
-    background-color: var(--color-surface-hover);
-    transform: translateX(4px);
-}
-
-/* General active effect for sidebar items (expanded) */
-.sidebar-item.active {
-    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
-    color: white;
-}
-
-/* Ensure icon color is white for active item in expanded state */
-.sidebar-item.active i {
-    color: white;
-}
-
 
 html.sidebar-collapsed-root .sidebar .sidebar-item span,
 html.sidebar-collapsed-root .sidebar .sidebar-section h3 {
@@ -245,7 +244,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 
 .sidebar-section {
     margin-top: var(--spacing-xl);
-    padding: 0 var(--spacing-sm);
 }
 
 .sidebar-section h3 {
@@ -278,7 +276,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     transition: all var(--transition-speed) var(--transition-timing);
     border: 1px solid var(--color-border);
     position: relative;
-    overflow: hidden;
     background: linear-gradient(145deg, var(--color-surface), var(--color-surface-raised));
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
@@ -286,7 +283,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     border: 1px solid var(--color-border);
     transition: all var(--transition-speed) var(--transition-timing);
     position: relative;
-    overflow: hidden;
 }
 
 .item-card:hover {
@@ -805,7 +801,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     border: 1px solid var(--color-border);
     transition: all var(--transition-speed) var(--transition-timing);
     position: relative;
-    overflow: hidden;
     color: rgba(255,255,255,0.88);
     text-decoration: none;
 }
