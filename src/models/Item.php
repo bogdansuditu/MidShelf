@@ -234,4 +234,68 @@ class Item {
             throw $e;
         }
     }
+
+    // Method to fetch all items with details for exporting
+    public function getItemsForExport($userId) {
+        $sql = "
+            SELECT 
+                i.name, 
+                i.description, 
+                c.name as category_name, 
+                l.name as location_name, 
+                i.rating, 
+                GROUP_CONCAT(t.name) as tags, 
+                i.created_at, 
+                i.updated_at
+            FROM items i
+            LEFT JOIN categories c ON i.category_id = c.id
+            LEFT JOIN locations l ON i.location_id = l.id
+            LEFT JOIN items_tags it ON i.id = it.item_id
+            LEFT JOIN tags t ON it.tag_id = t.id
+            WHERE i.user_id = ?
+            GROUP BY i.id
+            ORDER BY i.created_at DESC
+        ";
+        
+        try {
+            // Fetch all items directly
+            $items = $this->db->query($sql, [$userId])->fetchAll(PDO::FETCH_ASSOC);
+            return $items;
+        } catch (Exception $e) {
+            error_log("Error fetching items for export: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Deletes all items and their tag associations for a specific user.
+     */
+    public function deleteAllItemsForUser($userId) {
+        try {
+            $this->db->getConnection()->beginTransaction();
+
+            // Step 1: Find all item IDs for the user
+            $sql_find_items = "SELECT id FROM items WHERE user_id = ?";
+            $itemIds = $this->db->query($sql_find_items, [$userId])->fetchAll(PDO::FETCH_COLUMN);
+
+            if (!empty($itemIds)) {
+                // Step 2: Delete associations from items_tags
+                // Create placeholders for the IN clause
+                $placeholders = implode(',', array_fill(0, count($itemIds), '?'));
+                $sql_delete_tags = "DELETE FROM items_tags WHERE item_id IN ({$placeholders})";
+                $this->db->query($sql_delete_tags, $itemIds);
+
+                // Step 3: Delete the items themselves
+                $sql_delete_items = "DELETE FROM items WHERE user_id = ?"; // Redundant check, but safe
+                $this->db->query($sql_delete_items, [$userId]);
+            }
+
+            $this->db->getConnection()->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->getConnection()->rollBack();
+            error_log("Error deleting all items for user {$userId}: " . $e->getMessage());
+            throw $e;
+        }
+    }
 }

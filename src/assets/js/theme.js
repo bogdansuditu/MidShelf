@@ -93,7 +93,13 @@ function applyThemeColor(hexColor) {
     if (indicator) {
         indicator.style.backgroundColor = variants.primary;
     }
+    // Also update the value of the hidden color input if it exists (for the color picker)
+    const hiddenColorInput = document.querySelector('input.color-input');
+    if (hiddenColorInput) {
+        hiddenColorInput.value = variants.primary; // Set its value to the base color
+    }
 }
+
 
 // --- Save Theme Color to Local Storage ---
 function saveThemeColor(hexColor) {

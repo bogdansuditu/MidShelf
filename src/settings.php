@@ -26,6 +26,8 @@ $username = $auth->getCurrentUsername();
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- Add SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script>
         // Apply sidebar state immediately before any rendering
         (function() {
@@ -82,6 +84,57 @@ $username = $auth->getCurrentUsername();
         }
         .settings-color-indicator:hover {
              border-color: var(--color-primary);
+        }
+        
+        /* Danger Button Style */
+        .btn-danger {
+            background-color: var(--color-danger);
+            color: white; /* Ensure text is readable */
+            border: 1px solid transparent;
+        }
+        .btn-danger:hover {
+            background-color: var(--color-danger-hover);
+            box-shadow: 0 0 8px 0 var(--color-danger-glow); /* Add glow similar to primary */
+        }
+        /* Ensure form inside settings-item aligns items */
+        .settings-item form {
+             display: flex;
+             align-items: center; /* Align button/input vertically if needed */
+             gap: var(--spacing-md);
+         }
+        .settings-item input[type="file"] {
+            /* Basic styling for file input if needed */
+            color: var(--color-text-secondary);
+        }
+        /* SweetAlert2 Customizations (Optional) */
+        .swal2-popup {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            border-radius: var(--radius-lg);
+        }
+        .swal2-title {
+            color: var(--color-text) !important;
+        }
+        .swal2-html-container {
+            color: var(--color-text-secondary) !important;
+        }
+        .swal2-confirm {
+            background-color: var(--color-primary) !important;
+            border-radius: var(--radius-md) !important;
+        }
+        .swal2-confirm:hover {
+            background-color: var(--color-primary-hover) !important;
+        }
+        .swal2-cancel {
+            background-color: var(--color-surface-raised) !important;
+            color: var(--color-text-secondary) !important;
+            border: 1px solid var(--color-border) !important;
+            border-radius: var(--radius-md) !important;
+        }
+        .swal2-cancel:hover {
+            background-color: var(--color-surface-hover) !important;
+            border-color: var(--color-border-hover) !important;
         }
     </style>
 </head>
@@ -147,7 +200,7 @@ $username = $auth->getCurrentUsername();
                     <label for="accent-color">Accent Color</label>
                     <div class="settings-color-picker theme-picker" title="Change Theme Color">
                         <div class="settings-color-indicator theme-color-indicator"></div>
-                        <input type="color" class="color-input" style="visibility: hidden; width: 0; height: 0; position: absolute;">
+                        <input type="color" class="color-input" value="<?php echo defined('ACCENT_COLOR') ? ACCENT_COLOR : '#8b5cf6'; ?>" style="visibility: hidden; width: 0; height: 0; position: absolute;">
                     </div>
                 </div>
                 <!-- Add more appearance settings here if needed -->
@@ -157,12 +210,30 @@ $username = $auth->getCurrentUsername();
             <section class="settings-section">
                 <h2>Data Management</h2>
                 <div class="settings-item">
-                    <label>Import Data</label>
-                    <button class="btn btn-secondary" disabled>Import</button> <!-- Placeholder -->
+                    <label>Import Data from CSV</label>
+                    <form id="import-form" action="import.php" method="post" enctype="multipart/form-data">
+                        <input type="file" name="import_file" accept=".csv" required>
+                        <button type="submit" class="btn btn-secondary">Import & Replace Data</button>
+                    </form>
+                </div>
+                <div style="margin-left: var(--spacing-md); margin-top: calc(-1 * var(--spacing-md)); /* Adjust alignment */ padding-bottom: var(--spacing-md); font-size: 0.85rem; color: var(--color-text-secondary);">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--color-warning);"></i>
+                    <strong>Warning:</strong> Importing will replace all current data.
                 </div>
                 <div class="settings-item">
-                    <label>Export Data</label>
-                    <button class="btn btn-secondary" disabled>Export</button> <!-- Placeholder -->
+                    <label>Export All Data</label>
+                    <a href="export.php" class="btn btn-secondary">Export as CSV</a>
+                </div>
+            </section>
+
+            <!-- Danger Zone -->
+            <section class="settings-section">
+                <h2>Danger Zone</h2>
+                <div class="settings-item">
+                    <label style="color: var(--color-danger);">Delete All Data</label>
+                    <form id="delete-form" action="delete_data.php" method="post">
+                        <button type="submit" class="btn btn-danger">Delete All My Data</button>
+                    </form>
                 </div>
             </section>
 
@@ -171,6 +242,89 @@ $username = $auth->getCurrentUsername();
 
     <script src="/assets/js/app.js"></script>
     <script src="/assets/js/theme.js"></script>
-    <!-- Add any specific JS for settings page if needed later -->
+    <!-- Add SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle Import Confirmation
+            const importForm = document.getElementById('import-form');
+            if (importForm) {
+                importForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Stop default submission
+                    Swal.fire({
+                        title: 'Confirm Import & Replace',
+                        html: "This will <strong>DELETE ALL</strong> your existing items, categories, locations, and tags before importing the data from the selected file.<br><br>Are you sure you want to proceed?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, Import & Replace!',
+                        cancelButtonText: 'Cancel',
+                        confirmButtonColor: 'var(--color-primary)',
+                        cancelButtonColor: 'var(--color-surface-raised)'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If confirmed, submit the form programmatically
+                            importForm.submit(); 
+                        }
+                    });
+                });
+            }
+
+            // Handle Delete Confirmation
+            const deleteForm = document.getElementById('delete-form');
+            if (deleteForm) {
+                deleteForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Stop default submission
+                    Swal.fire({
+                        title: 'Delete All Data?',
+                        html: "Are you absolutely sure? This will delete all your items, categories, locations, and tags <strong>permanently</strong>.<br><br>This action cannot be undone.",
+                        icon: 'error', // Use error icon for high danger
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, Delete Everything!',
+                        cancelButtonText: 'Cancel',
+                        confirmButtonColor: 'var(--color-danger)',
+                        cancelButtonColor: 'var(--color-surface-raised)'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If confirmed, submit the form programmatically
+                            deleteForm.submit();
+                        }
+                    });
+                });
+            }
+
+            // Display Feedback Messages from Session
+            <?php
+            $successMessage = '';
+            if (isset($_SESSION['settings_success'])) {
+                $successMessage = json_encode($_SESSION['settings_success']);
+                unset($_SESSION['settings_success']);
+            }
+            $errorMessage = '';
+            if (isset($_SESSION['settings_error'])) {
+                $errorMessage = json_encode($_SESSION['settings_error']);
+                unset($_SESSION['settings_error']);
+            }
+            ?>
+
+            const successMsg = <?php echo $successMessage ?: 'null'; ?>;
+            const errorMsg = <?php echo $errorMessage ?: 'null'; ?>;
+
+            if (successMsg) {
+                Swal.fire({
+                    title: 'Success!',
+                    html: successMsg,
+                    icon: 'success',
+                    confirmButtonColor: 'var(--color-primary)'
+                });
+            } else if (errorMsg) {
+                Swal.fire({
+                    title: 'Error!',
+                    html: errorMsg,
+                    icon: 'error',
+                    confirmButtonColor: 'var(--color-danger)'
+                });
+            }
+        });
+    </script>
 </body>
 </html>

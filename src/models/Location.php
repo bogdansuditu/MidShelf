@@ -83,4 +83,52 @@ class Location {
             throw $e;
         }
     }
+
+    /**
+     * Finds a location by name for a specific user, or creates it if it doesn't exist.
+     * Returns the location ID.
+     */
+    public function getLocationByNameOrCreate($name, $userId) {
+        // Trim the name
+        $trimmedName = trim($name);
+        if (empty($trimmedName)) {
+            return null; // Cannot process empty location name
+        }
+
+        // Check if location exists
+        $sql_find = "SELECT id FROM locations WHERE user_id = ? AND LOWER(name) = LOWER(?)";
+        try {
+            $location = $this->db->query($sql_find, [$userId, $trimmedName])->fetch(PDO::FETCH_ASSOC);
+            
+            if ($location) {
+                return $location['id']; // Return existing location ID
+            }
+
+            // Location doesn't exist, create it with null description
+            $sql_create = "INSERT INTO locations (user_id, name, description) VALUES (?, ?, NULL)";
+            $this->db->query($sql_create, [
+                $userId,
+                $trimmedName // Use the trimmed name
+            ]);
+            return $this->db->getConnection()->lastInsertId(); // Return new location ID
+        } catch (Exception $e) {
+            error_log("Error finding or creating location '{$trimmedName}': " . $e->getMessage());
+            throw $e; // Re-throw the exception
+        }
+    }
+
+    /**
+     * Deletes all locations for a specific user.
+     * Assumes items using these locations have already been handled (deleted or location_id set to NULL).
+     */
+    public function deleteAllLocationsForUser($userId) {
+        $sql = "DELETE FROM locations WHERE user_id = ?";
+        try {
+            $stmt = $this->db->query($sql, [$userId]);
+            return $stmt->rowCount(); // Return number of deleted rows
+        } catch (Exception $e) {
+            error_log("Error deleting all locations for user {$userId}: " . $e->getMessage());
+            throw $e;
+        }
+    }
 }

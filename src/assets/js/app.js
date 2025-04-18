@@ -40,7 +40,7 @@ async function loadSidebarCategories() {
         if (!categoriesContainer) return;
         
         if (categories.length === 0) {
-            categoriesContainer.innerHTML = '<p class="empty-state">No categories yet</p>';
+            categoriesContainer.innerHTML = '';
             return;
         }
 

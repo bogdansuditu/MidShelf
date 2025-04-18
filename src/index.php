@@ -126,7 +126,7 @@ $locations = $locationModel->getLocations($userId);
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-tags"></i>
-                                <p>No categories found. <a href="/categories.php">Add some categories</a> to organize your items!</p>
+                                <p>No categories found yet.</p>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -156,7 +156,7 @@ $locations = $locationModel->getLocations($userId);
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <p>No locations found. <a href="/locations.php">Add some locations</a> to organize your items!</p>
+                                <p>No locations found yet.</p>
                             </div>
                         <?php endif; ?>
                     </div>

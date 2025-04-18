@@ -129,10 +129,6 @@ $items = $itemModel->getItems($userId, $categoryId);
                                             <div class="empty-state-content">
                                                 <i class="fas fa-box-open"></i>
                                                 <p>No items found in this view.</p>
-                                                <button class="btn btn-sm btn-primary" onclick="location.href='/items.php?action=new'">
-                                                    <i class="fas fa-plus"></i>
-                                                    <span>Add Item</span>
-                                                </button>
                                             </div>
                                         </td>
                                     </tr>

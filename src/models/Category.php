@@ -85,4 +85,57 @@ class Category {
             throw $e;
         }
     }
+    
+    /**
+     * Finds a category by name for a specific user, or creates it if it doesn't exist.
+     * Returns the category ID.
+     */
+    public function getCategoryByNameOrCreate($name, $userId) {
+        // Trim the name to avoid issues with whitespace
+        $trimmedName = trim($name);
+        if (empty($trimmedName)) {
+            return null; // Cannot process empty category name
+        }
+
+        // Check if category exists
+        $sql_find = "SELECT id FROM categories WHERE user_id = ? AND LOWER(name) = LOWER(?)";
+        try {
+            $category = $this->db->query($sql_find, [$userId, $trimmedName])->fetch(PDO::FETCH_ASSOC);
+            
+            if ($category) {
+                return $category['id']; // Return existing category ID
+            }
+
+            // Category doesn't exist, create it
+            $default_icon = 'fas fa-folder'; // Default icon
+            $default_color = '#cccccc';      // Default color
+            
+            $sql_create = "INSERT INTO categories (user_id, name, icon, color) VALUES (?, ?, ?, ?)";
+            $this->db->query($sql_create, [
+                $userId,
+                $trimmedName, // Use the trimmed name
+                $default_icon,
+                $default_color
+            ]);
+            return $this->db->getConnection()->lastInsertId(); // Return new category ID
+        } catch (Exception $e) {
+            error_log("Error finding or creating category '{$trimmedName}': " . $e->getMessage());
+            throw $e; // Re-throw the exception to be handled by the importer
+        }
+    }
+
+    /**
+     * Deletes all categories for a specific user.
+     * Assumes items using these categories have already been handled (deleted or category_id set to NULL).
+     */
+    public function deleteAllCategoriesForUser($userId) {
+        $sql = "DELETE FROM categories WHERE user_id = ?";
+        try {
+            $stmt = $this->db->query($sql, [$userId]);
+            return $stmt->rowCount(); // Return number of deleted rows
+        } catch (Exception $e) {
+            error_log("Error deleting all categories for user {$userId}: " . $e->getMessage());
+            throw $e;
+        }
+    }
 }
