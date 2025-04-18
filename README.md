@@ -11,6 +11,8 @@ MidShelf is a personal inventory management system that helps you organize and t
 - **Location Tracking**: Track where your items are stored
 - **Tagging System**: Add multiple tags to items for flexible organization
 - **Rating System**: Rate your items on a 5-star scale
+- **Data Import/Export**: Import and replace all data from a CSV file, or export current data to CSV (via Settings).
+- **Accent Color Customization**: Change the primary interface color (via Settings).
 - **Responsive Design**: Works on desktop and mobile devices
 - **User Authentication**: Secure login system
 - **Dark Theme**: Easy on the eyes with a modern dark interface
@@ -141,7 +143,7 @@ docker-compose exec web php /scripts/manage_users.php delete <username>
 - **Home**: View all categories, locations, and items
 - **All Items**: View and manage all items in a table format
 - **Categories**: Filter items by specific categories
-- **Settings**: Access category and location management
+- **Settings**: Manage categories, locations, import/export data, and customize appearance.
 
 ## Development
 
