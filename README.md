@@ -6,16 +6,24 @@ MidShelf is a personal inventory management system that helps you organize and t
 
 ## Features
 
-- **Item Management**: Add, edit, and delete items in your inventory
-- **Categorization**: Organize items by customizable categories
-- **Location Tracking**: Track where your items are stored
-- **Tagging System**: Add multiple tags to items for flexible organization
-- **Rating System**: Rate your items on a 5-star scale
-- **Data Import/Export**: Import and replace all data from a CSV file, or export current data to CSV (via Settings).
-- **Accent Color Customization**: Change the primary interface color (via Settings).
-- **Responsive Design**: Works on desktop and mobile devices
-- **User Authentication**: Secure login system
-- **Dark Theme**: Easy on the eyes with a modern dark interface
+- **Item Management**:
+  - Add, edit, and delete items in your inventory
+  - Duplicate existing items for quick creation of similar entries
+  - Configurable deletion warnings for safer item management
+- **Smart Organization**:
+  - Organize items by customizable categories
+  - Track item locations
+  - Flexible tagging system with filtering capabilities
+  - Filter items by clicking on tags to quickly find related items
+- **Enhanced User Experience**:
+  - Rate items on a 5-star scale
+  - Customizable accent colors to personalize the interface
+  - Responsive design that works on all devices
+  - Dark theme for comfortable viewing
+- **Data Management**:
+  - Import and export data via CSV
+  - Secure user authentication
+  - Configurable confirmation dialogs for critical actions
 
 ## Technologies Used
 
