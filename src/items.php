@@ -31,6 +31,8 @@ $items = $itemModel->getItems($userId, $categoryId);
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- Add SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script>
         // Apply sidebar state immediately before any rendering
         (function() {
@@ -97,7 +99,7 @@ $items = $itemModel->getItems($userId, $categoryId);
                     </h1>
                 </div>
                 <div class="actions">
-                    <button class="btn btn-primary" onclick="location.href='/items.php?action=new'">
+                    <button class="btn btn-primary" onclick="openItemModal()">
                         <i class="fas fa-plus"></i>
                         <span>Add Item</span>
                     </button>
@@ -105,103 +107,116 @@ $items = $itemModel->getItems($userId, $categoryId);
             </div>
 
             <div class="content fade-in">
-                <?php if ($action === 'new' || $action === 'edit'): ?>
-                    <div class="card">
-                        <?php include __DIR__ . '/components/item-form.php'; ?>
-                    </div>
-                <?php else: ?>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Rating</th>
+                                <th>Tags</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($items)): ?>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Location</th>
-                                    <th>Rating</th>
-                                    <th>Tags</th>
-                                    <th>Actions</th>
+                                    <td colspan="6" class="empty-state">
+                                        <div class="empty-state-content">
+                                            <i class="fas fa-box-open"></i>
+                                            <p>No items found in this view.</p>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (empty($items)): ?>
+                            <?php else: ?>
+                                <?php foreach ($items as $item): ?>
                                     <tr>
-                                        <td colspan="6" class="empty-state">
-                                            <div class="empty-state-content">
-                                                <i class="fas fa-box-open"></i>
-                                                <p>No items found in this view.</p>
+                                        <td>
+                                            <a class="item-cell-link" href="javascript:void(0);" onclick="openItemModal(<?php echo $item['id']; ?>)">
+                                                <div class="item-main-name"><?php echo htmlspecialchars($item['name']); ?></div>
+                                                <?php if ($item['description']): ?>
+                                                    <div class="item-description"><?php echo htmlspecialchars(substr($item['description'], 0, 50)) . (strlen($item['description']) > 50 ? '...' : ''); ?></div>
+                                                <?php endif; ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <?php if ($item['category_name']): ?>
+                                                <div class="category-name">
+                                                    <i class="<?php echo htmlspecialchars($item['category_icon'] ?? 'fas fa-folder'); ?>" 
+                                                       style="color: <?php echo htmlspecialchars($item['category_color'] ?? '#8b5cf6'); ?>"></i>
+                                                    <span><?php echo htmlspecialchars($item['category_name']); ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($item['location_name']): ?>
+                                                <div class="location-name">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                    <span><?php echo htmlspecialchars($item['location_name']); ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                        <div class="rating">
+                                            <?php for ($i = 1; $i <= (int)$item['rating']; $i++): ?>
+                                                <i class="fas fa-star"></i>
+                                            <?php endfor; ?>
+                                            <?php for ($i = (int)$item['rating'] + 1; $i <= 5; $i++): ?>
+                                                <i class="far fa-star"></i>
+                                            <?php endfor; ?>
+                                        </div>
+                                    </td>
+                                        <td>
+                                            <div class="tags">
+                                                <?php if (!empty($item['tags'])): ?>
+                                                    <?php foreach ($item['tags'] as $tag): ?>
+                                                        <span class="tag"><?php echo htmlspecialchars($tag); ?></span>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="table-actions">
+                                                <button class="btn-icon" onclick="openItemModal(<?php echo $item['id']; ?>)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-icon" onclick="duplicateItem(<?php echo $item['id']; ?>)" title="Duplicate Item">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                                <button class="btn-icon" onclick="deleteItem(<?php echo $item['id']; ?>)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
-                                <?php else: ?>
-                                    <?php foreach ($items as $item): ?>
-                                        <tr>
-                                            <td>
-                                                <a class="item-cell-link" href="/items.php?action=edit&id=<?php echo $item['id']; ?>">
-                                                    <div class="item-main-name"><?php echo htmlspecialchars($item['name']); ?></div>
-                                                    <?php if ($item['description']): ?>
-                                                        <div class="item-description"><?php echo htmlspecialchars(substr($item['description'], 0, 50)) . (strlen($item['description']) > 50 ? '...' : ''); ?></div>
-                                                    <?php endif; ?>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <?php if ($item['category_name']): ?>
-                                                    <div class="category-name">
-                                                        <i class="<?php echo htmlspecialchars($item['category_icon'] ?? 'fas fa-folder'); ?>" 
-                                                           style="color: <?php echo htmlspecialchars($item['category_color'] ?? '#8b5cf6'); ?>"></i>
-                                                        <span><?php echo htmlspecialchars($item['category_name']); ?></span>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($item['location_name']): ?>
-                                                    <div class="location-name">
-                                                        <i class="fas fa-map-marker-alt"></i>
-                                                        <span><?php echo htmlspecialchars($item['location_name']); ?></span>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                            <div class="rating">
-                                                <?php for ($i = 1; $i <= (int)$item['rating']; $i++): ?>
-                                                    <i class="fas fa-star"></i>
-                                                <?php endfor; ?>
-                                                <?php for ($i = (int)$item['rating'] + 1; $i <= 5; $i++): ?>
-                                                    <i class="far fa-star"></i>
-                                                <?php endfor; ?>
-                                            </div>
-                                        </td>
-                                            <td>
-                                                <div class="tags">
-                                                    <?php if (!empty($item['tags'])): ?>
-                                                        <?php foreach ($item['tags'] as $tag): ?>
-                                                            <span class="tag"><?php echo htmlspecialchars($tag); ?></span>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="table-actions">
-                                                    <button class="btn-icon" onclick="editItem(<?php echo $item['id']; ?>)">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn-icon" onclick="deleteItem(<?php echo $item['id']; ?>)">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
 
+    <!-- Item Modal -->
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="itemModalTitle">Add Item</h2>
+                <button class="btn-icon" onclick="closeItemModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <?php include __DIR__ . '/components/item-form.php'; ?>
+        </div>
+    </div>
+
     <script src="/assets/js/app.js"></script>
     <script src="/assets/js/theme.js"></script>
+    <!-- Add SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/items.js"></script>
 
 </body>
 </html>

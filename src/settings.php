@@ -136,6 +136,55 @@ $username = $auth->getCurrentUsername();
             background-color: var(--color-surface-hover) !important;
             border-color: var(--color-border-hover) !important;
         }
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-surface-raised);
+            transition: var(--transition-speed);
+            border-radius: var(--radius-md);
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition-speed);
+            border-radius: 50%;
+        }
+        .slider.round {
+            border-radius: var(--radius-md);
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--color-primary);
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--color-primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
     </style>
 </head>
 <body>
@@ -229,6 +278,16 @@ $username = $auth->getCurrentUsername();
             <!-- Danger Zone -->
             <section class="settings-section">
                 <h2>Danger Zone</h2>
+                <div class="settings-item">
+                    <label for="skipItemDeleteConfirmToggle">Skip Item Delete Confirmation</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="skipItemDeleteConfirmToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div style="margin-left: var(--spacing-md); margin-top: calc(-1 * var(--spacing-md)); /* Adjust alignment */ padding-bottom: var(--spacing-md); font-size: 0.85rem; color: var(--color-text-secondary);">
+                    <i class="fas fa-info-circle"></i> If enabled, items on the 'All Items' page will be deleted immediately without a confirmation prompt.
+                </div>
                 <div class="settings-item">
                     <label style="color: var(--color-danger);">Delete All Data</label>
                     <form id="delete-form" action="delete_data.php" method="post">

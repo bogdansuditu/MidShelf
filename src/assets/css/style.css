@@ -184,9 +184,8 @@ html.sidebar-collapsed-root .sidebar .logo span {
 
 /* Animated active effect for sidebar items (expanded) */
 .sidebar-item.active {
-    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
     color: white;
-    box-shadow: 0 4px 24px -8px var(--color-primary), 0 3px 12px 0 rgba(80,60,180,0.10);
+    box-shadow: inset 8px 0px 8px -8px var(--color-primary);
     transform: scale(1.04);
 }
 
@@ -452,15 +451,6 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     box-shadow: 0 2px 32px 0 rgba(80,60,180,0.10);
     min-height: calc(100vh - 7rem);
     justify-content: flex-start;
-}
-
-@media (max-width: 700px) {
-  .item-form {
-    width: 98%;
-    padding: var(--spacing-lg) var(--spacing-md);
-    max-width: 98vw;
-    min-height: calc(100vh - 4rem);
-  }
 }
 
 @media (max-width: 700px) {
@@ -953,6 +943,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
   color: var(--color-text, #222);
   margin-bottom: 2px;
 }
+
 .item-description {
   font-size: 0.93em;
   color: var(--color-text-secondary, #666);
@@ -961,7 +952,8 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 }
 .item-cell-link:hover .item-main-name,
 .item-cell-link:focus-visible .item-main-name {
-  color: var(--color-text, #222);
+  /* color: var(--color-text, #222); */
+ color: var(--color-primary, #6c47ff);
 }
 
 
@@ -1039,7 +1031,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     background-color: var(--color-surface);
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-border);
-    margin: var(--spacing-lg);
+    margin: var(--spacing-sm);
     overflow: hidden;
 }
 
@@ -1111,6 +1103,8 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     max-width: 500px;
     box-shadow: var(--shadow-xl);
     border: 1px solid var(--color-border);
+    max-height: 85vh; /* Limit height to 85% of viewport height */
+    overflow-y: auto; /* Add scrollbar if content exceeds max-height */
 }
 
 .modal-header {
@@ -1369,4 +1363,16 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 /* Ensure smooth transitions */
 .container, .sidebar {
     transition: all var(--transition-speed) var(--transition-timing);
+}
+
+/* Override item-form styles when inside a modal */
+.modal-content .item-form {
+    min-height: auto; /* Remove the tall min-height */
+    margin: 0; /* Remove the page-level margin */
+    padding: 0; /* Use modal-content padding */
+    box-shadow: none; /* Modal provides the shadow */
+    background: none; /* Use modal background */
+    border: none; /* Modal provides the border */
+    width: 100%; /* Ensure it takes modal width */
+    max-width: 100%;
 }

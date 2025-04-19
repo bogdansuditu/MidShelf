@@ -165,7 +165,7 @@ $locations = $locationModel->getLocations($userId);
                 <!-- All Items Section -->
                 <section class="home-section">
                     <div class="sidebar-section">
-                        <h3>All Items</h3>
+                        <h3>Most recent items</h3>
                     </div>
                     
                     <div class="table-container">
