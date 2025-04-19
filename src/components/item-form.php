@@ -39,30 +39,32 @@ $locations = $locationModel->getLocations($userId);
                   placeholder="Enter item description"><?php echo $item ? htmlspecialchars($item['description']) : ''; ?></textarea>
     </div>
 
-    <div class="form-group">
-        <label for="category">Category</label>
-        <select id="category" name="category_id">
-            <option value="">Select a category</option>
-            <?php foreach ($categories as $category): ?>
-                <option value="<?php echo $category['id']; ?>"
-                        <?php echo $item && $item['category_id'] == $category['id'] ? 'selected' : ''; ?>>
-                    <?php echo htmlspecialchars($category['name']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <div class="form-row">
+        <div class="form-group form-group-half">
+            <label for="category">Category</label>
+            <select id="category" name="category_id">
+                <option value="">Select a category</option>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?php echo $category['id']; ?>"
+                            <?php echo $item && $item['category_id'] == $category['id'] ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($category['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="location">Location</label>
-        <select id="location" name="location_id">
-            <option value="">Select a location</option>
-            <?php foreach ($locations as $location): ?>
-                <option value="<?php echo $location['id']; ?>"
-                        <?php echo $item && $item['location_id'] == $location['id'] ? 'selected' : ''; ?>>
-                    <?php echo htmlspecialchars($location['name']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+        <div class="form-group form-group-half">
+            <label for="location">Location</label>
+            <select id="location" name="location_id">
+                <option value="">Select a location</option>
+                <?php foreach ($locations as $location): ?>
+                    <option value="<?php echo $location['id']; ?>"
+                            <?php echo $item && $item['location_id'] == $location['id'] ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($location['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
     </div>
 
     <div class="form-group">
