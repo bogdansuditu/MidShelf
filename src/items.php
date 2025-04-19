@@ -18,9 +18,17 @@ $username = $auth->getCurrentUsername();
 $categoryId = isset($_GET['category']) ? (int)$_GET['category'] : null;
 $action = $_GET['action'] ?? 'list';
 
+// Handle tag filtering
+if (isset($_GET['tag'])) {
+    $_SESSION['selected_tag'] = $_GET['tag'];
+} else if (isset($_GET['reset_tag'])) {
+    unset($_SESSION['selected_tag']);
+}
+$selectedTag = $_SESSION['selected_tag'] ?? null;
+
 // Get items for the current user
 $itemModel = new Item();
-$items = $itemModel->getItems($userId, $categoryId);
+$items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,11 +63,11 @@ $items = $itemModel->getItems($userId, $categoryId);
                 <span><?php echo APP_NAME; ?></span>
             </div>
             <nav class="sidebar-items">
-                <a href="/" class="sidebar-item">
+                <a href="/?reset_tag=1" class="sidebar-item">
                     <i class="fas fa-home"></i>
                     <span>Home</span>
                 </a>
-                <a href="/items.php" class="sidebar-item active">
+                <a href="/items.php?reset_tag=1" class="sidebar-item active">
                     <i class="fas fa-list"></i>
                     <span>All Items</span>
                 </a>
@@ -103,6 +111,9 @@ $items = $itemModel->getItems($userId, $categoryId);
                     </h1>
                 </div>
                 <div class="actions">
+                    <?php if ($selectedTag): ?>
+                    <a href="?reset_tag=1" class="tag tag-selected" title="Click to clear filter"><?php echo htmlspecialchars($selectedTag); ?></a>
+                    <?php endif; ?>
                     <button class="btn btn-primary" onclick="openItemModal()">
                         <i class="fas fa-plus"></i>
                         <span>Add Item</span>
@@ -172,10 +183,10 @@ $items = $itemModel->getItems($userId, $categoryId);
                                         </div>
                                     </td>
                                         <td>
-                                            <div class="tags">
+                                            <div class="tags<?php echo $selectedTag ? ' has-selected-tag' : ''; ?>">
                                                 <?php if (!empty($item['tags'])): ?>
                                                     <?php foreach ($item['tags'] as $tag): ?>
-                                                        <span class="tag"><?php echo htmlspecialchars($tag); ?></span>
+                                                        <a href="?tag=<?php echo urlencode($tag); ?>" class="tag<?php echo $selectedTag === $tag ? ' tag-selected' : ''; ?>"><?php echo htmlspecialchars($tag); ?></a>
                                                     <?php endforeach; ?>
                                                 <?php endif; ?>
                                             </div>

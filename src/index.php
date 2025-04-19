@@ -22,7 +22,15 @@ $itemModel = new Item();
 $categoryModel = new Category();
 $locationModel = new Location();
 
-$items = $itemModel->getItems($userId, null, 10); // Pass null for categoryId and 10 for limit
+// Handle tag filtering
+if (isset($_GET['tag'])) {
+    $_SESSION['selected_tag'] = $_GET['tag'];
+} else if (isset($_GET['reset_tag'])) {
+    unset($_SESSION['selected_tag']);
+}
+$selectedTag = $_SESSION['selected_tag'] ?? null;
+
+$items = $itemModel->getItems($userId, null, 10, $selectedTag); // Pass null for categoryId and 10 for limit
 $categories = $categoryModel->getCategories($userId);
 $locations = $locationModel->getLocations($userId);
 ?>
@@ -99,6 +107,9 @@ $locations = $locationModel->getLocations($userId);
                     <h1>Welcome, <?php echo htmlspecialchars($username); ?></h1>
                 </div>
                 <div class="actions">
+                    <?php if ($selectedTag): ?>
+                    <a href="?reset_tag=1" class="tag tag-selected" title="Click to clear filter"><?php echo htmlspecialchars($selectedTag); ?></a>
+                    <?php endif; ?>
                     <button class="btn btn-primary" onclick="location.href='/items.php?action=new'">
                         <i class="fas fa-plus"></i>
                         <span>Add Item</span>
@@ -219,10 +230,10 @@ $locations = $locationModel->getLocations($userId);
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="tags">
+                                            <div class="tags<?php echo $selectedTag ? ' has-selected-tag' : ''; ?>">
                                                 <?php if (!empty($item['tags'])): ?>
                                                     <?php foreach ($item['tags'] as $tag): ?>
-                                                        <span class="tag"><?php echo htmlspecialchars($tag); ?></span>
+                                                        <a href="?tag=<?php echo urlencode($tag); ?>" class="tag<?php echo $selectedTag === $tag ? ' tag-selected' : ''; ?>"><?php echo htmlspecialchars($tag); ?></a>
                                                     <?php endforeach; ?>
                                                 <?php endif; ?>
                                             </div>

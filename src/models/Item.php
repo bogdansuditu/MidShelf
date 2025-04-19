@@ -8,7 +8,7 @@ class Item {
         $this->db = Database::getInstance();
     }
 
-    public function getItems($userId, $categoryId = null, $limit = null) {
+    public function getItems($userId, $categoryId = null, $limit = null, $tag = null) {
         $sql = "
             SELECT 
                 i.*,
@@ -29,6 +29,13 @@ class Item {
         if ($categoryId) {
             $sql .= " AND i.category_id = ?";
             $params[] = $categoryId;
+        }
+
+        if ($tag) {
+            $sql .= " AND EXISTS (SELECT 1 FROM items_tags it2 
+                      JOIN tags t2 ON it2.tag_id = t2.id 
+                      WHERE it2.item_id = i.id AND t2.name = ?)";
+            $params[] = $tag;
         }
 
         $sql .= " GROUP BY i.id ORDER BY i.created_at DESC";
