@@ -36,6 +36,10 @@ $locations = $locationModel->getLocations($userId);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <script>
+        // Make PHP user settings available to JavaScript
+        window.userSettings = <?php echo json_encode($_SESSION['user_settings'] ?? ['accent_color' => '#8b5cf6', 'skip_item_delete_confirm' => false]); ?>;
+    </script>
+    <script>
         // Apply sidebar state immediately before any rendering
         (function() {
             if (localStorage.getItem('sidebarCollapsed') === 'true') {
@@ -177,7 +181,6 @@ $locations = $locationModel->getLocations($userId);
                                     <th>Location</th>
                                     <th>Rating</th>
                                     <th>Tags</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -222,16 +225,6 @@ $locations = $locationModel->getLocations($userId);
                                                         <span class="tag"><?php echo htmlspecialchars($tag); ?></span>
                                                     <?php endforeach; ?>
                                                 <?php endif; ?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="table-actions">
-                                                <a href="/items.php?action=edit&id=<?php echo $item['id']; ?>" class="btn-icon">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <button class="btn-icon" onclick="deleteItem(<?php echo $item['id']; ?>)">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
                                             </div>
                                         </td>
                                     </tr>

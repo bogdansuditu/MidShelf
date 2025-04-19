@@ -1,63 +1,76 @@
-// --- Helper: Convert Hex to HSL ---
+// src/assets/js/theme.js
+
+// --- Utility: Convert Hex to HSL ---
 function hexToHsl(hex) {
-    let r = 0, g = 0, b = 0;
-    if (hex.length == 4) {
-        r = parseInt(hex[1] + hex[1], 16);
-        g = parseInt(hex[2] + hex[2], 16);
-        b = parseInt(hex[3] + hex[3], 16);
-    } else if (hex.length == 7) {
-        r = parseInt(hex[1] + hex[2], 16);
-        g = parseInt(hex[3] + hex[4], 16);
-        b = parseInt(hex[5] + hex[6], 16);
-    }
-    r /= 255; g /= 255; b /= 255;
-    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    // Remove the hash if it exists
+    hex = hex.replace(/^#/, '');
+
+    // Convert hex to RGB
+    let r = parseInt(hex.substring(0, 2), 16) / 255;
+    let g = parseInt(hex.substring(2, 4), 16) / 255;
+    let b = parseInt(hex.substring(4, 6), 16) / 255;
+
+    // Find min and max values
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
     let h, s, l = (max + min) / 2;
 
-    if (max == min) {
+    if (max === min) {
         h = s = 0; // achromatic
     } else {
-        let d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        let diff = max - min;
+        s = l > 0.5 ? diff / (2 - max - min) : diff / (max + min);
         switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
+            case r: h = (g - b) / diff + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / diff + 2; break;
+            case b: h = (r - g) / diff + 4; break;
         }
         h /= 6;
     }
+
+    // Return as degrees, percentage, percentage
     return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
 }
 
-// --- Helper: Convert HSL to Hex ---
+// --- Utility: Convert HSL to Hex ---
 function hslToHex(h, s, l) {
+    h /= 360;
     s /= 100;
     l /= 100;
-    let c = (1 - Math.abs(2 * l - 1)) * s,
-        x = c * (1 - Math.abs((h / 60) % 2 - 1)),
-        m = l - c / 2,
-        r = 0, g = 0, b = 0;
-
-    if (0 <= h && h < 60) { r = c; g = x; b = 0; }
-    else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
-    else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
-    else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
-    else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
-    else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
-
-    r = Math.round((r + m) * 255).toString(16);
-    g = Math.round((g + m) * 255).toString(16);
-    b = Math.round((b + m) * 255).toString(16);
-
-    if (r.length == 1) r = "0" + r;
-    if (g.length == 1) g = "0" + g;
-    if (b.length == 1) b = "0" + b;
-
-    return "#" + r + g + b;
+    let r, g, b;
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        };
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+    }
+    const toHex = x => {
+        const hex = Math.round(x * 255).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    };
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
+
 
 // --- Calculate Color Variants using HSL ---
 function calculateColorVariants(hexColor) {
+    // Basic check for valid hex format before proceeding
+    if (!hexColor || !/^#[a-fA-F0-9]{6}$/.test(hexColor)) {
+        console.warn("Invalid hex color format for variant calculation:", hexColor);
+        hexColor = '#8b5cf6'; // Fallback to default
+    }
+
     const [h, s, l] = hexToHsl(hexColor);
 
     // Adjust lightness for light/dark variants, clamp between 0-100
@@ -78,72 +91,60 @@ function calculateColorVariants(hexColor) {
 
 // --- Apply Theme Colors to CSS Variables ---
 function applyThemeColor(hexColor) {
-    const variants = calculateColorVariants(hexColor);
+    const variants = calculateColorVariants(hexColor); // Will use default if hexColor is invalid
     const root = document.documentElement;
-
-    if (!variants) return; // Should not happen with calculation function
 
     root.style.setProperty('--color-primary', variants.primary);
     root.style.setProperty('--color-primary-light', variants.light);
     root.style.setProperty('--color-primary-dark', variants.dark);
     root.style.setProperty('--color-accent', variants.accent);
 
-     // Update the theme picker indicator background
-    const indicator = document.querySelector('.theme-color-indicator');
+     // Update the theme picker indicator background on settings page if present
+    const indicator = document.querySelector('.settings-color-indicator'); // Use specific class from settings
     if (indicator) {
         indicator.style.backgroundColor = variants.primary;
     }
     // Also update the value of the hidden color input if it exists (for the color picker)
-    const hiddenColorInput = document.querySelector('input.color-input');
+    const hiddenColorInput = document.getElementById('accentColorPicker'); // Use ID from settings
     if (hiddenColorInput) {
         hiddenColorInput.value = variants.primary; // Set its value to the base color
     }
 }
 
 
-// --- Save Theme Color to Local Storage ---
-function saveThemeColor(hexColor) {
-    localStorage.setItem('userThemeColor', hexColor);
-}
+// --- Apply Initial Accent Color from Injected Settings ---
+(function() { // IIFE to execute immediately
+    // Attempt to get color from injected settings, fallback to default
+    // Ensure window.userSettings exists before accessing its properties
+    const initialAccentColor = (typeof window.userSettings !== 'undefined' && window.userSettings.accent_color)
+                               ? window.userSettings.accent_color
+                               : '#8b5cf6'; // Default purple
+    applyThemeColor(initialAccentColor);
+})();
 
-// --- Load Theme Color from Local Storage ---
-function loadThemeColor() {
-    const savedColor = localStorage.getItem('userThemeColor');
-    // Set default if no color saved yet
-    const initialColor = savedColor || '#8b5cf6'; // Default primary color
-    applyThemeColor(initialColor);
-}
 
-// --- Initialize Theme and Event Listeners (will be added later) ---
+// --- Add DOMContentLoaded Listeners for Picker Interaction (Visual Feedback Only) ---
 document.addEventListener('DOMContentLoaded', () => {
-    loadThemeColor();
+    // Setup theme picker interactions (if elements exist on the page)
+    const colorPickerInput = document.getElementById('accentColorPicker'); // Matches ID in settings.php
+    const colorIndicator = document.querySelector('.settings-color-indicator'); // Matches class in settings.php
 
-    const themePicker = document.querySelector('.theme-picker');
-    const colorInput = document.querySelector('.color-input'); // Assuming these IDs/classes exist
+    // Sync indicator click with hidden input click
+    if (colorIndicator && colorPickerInput) {
+        colorIndicator.addEventListener('click', () => colorPickerInput.click());
+    }
 
-    if (themePicker && colorInput) {
-         // When the visual picker element is clicked, trigger the hidden color input
-        themePicker.addEventListener('click', () => {
-            colorInput.click();
+    // Update CSS variables and indicator immediately on picker change
+    // This provides instant feedback. The actual saving is handled by settings.php's script.
+    if (colorPickerInput) {
+        colorPickerInput.addEventListener('input', function() {
+            applyThemeColor(this.value); // Use the main apply function
         });
-
-        // When the hidden color input value changes (user selects color)
-        colorInput.addEventListener('input', (event) => { // 'input' for live preview
-            const newColor = event.target.value;
-            applyThemeColor(newColor);
-        });
-        colorInput.addEventListener('change', (event) => { // 'change' for final selection
-             const finalColor = event.target.value;
-            saveThemeColor(finalColor); // Save only when selection is confirmed
-        });
-
-         // Update indicator initially
-        const initialColor = localStorage.getItem('userThemeColor') || '#8b5cf6';
-        const indicator = document.querySelector('.theme-color-indicator');
-        if (indicator) {
-            indicator.style.backgroundColor = initialColor;
-        }
-    } else {
-        console.warn("Theme picker elements not found.");
+         // Ensure picker's initial value matches applied theme
+         // This might be slightly redundant if applyThemeColor already sets it, but safe to keep.
+         const currentPrimary = document.documentElement.style.getPropertyValue('--color-primary');
+         if (currentPrimary) {
+            colorPickerInput.value = currentPrimary;
+         }
     }
 });

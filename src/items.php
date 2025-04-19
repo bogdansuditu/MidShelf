@@ -34,6 +34,10 @@ $items = $itemModel->getItems($userId, $categoryId);
     <!-- Add SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script>
+      // Make PHP user settings available to JavaScript
+      window.userSettings = <?php echo json_encode($_SESSION['user_settings'] ?? ['accent_color' => '#8b5cf6', 'skip_item_delete_confirm' => false]); ?>;
+    </script>
+    <script>
         // Apply sidebar state immediately before any rendering
         (function() {
             if (localStorage.getItem('sidebarCollapsed') === 'true') {

@@ -22,7 +22,21 @@ $username = $auth->getCurrentUsername();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo APP_NAME; ?> - Settings</title>
+    <title><?php echo APP_NAME ?? 'App'; ?> - Settings</title>
+    <script>
+        window.userSettings = <?php
+            // Fetch settings from session, provide defaults if not set or empty
+            $settings = $_SESSION['user_settings'] ?? [];
+            $defaults = [
+                'accent_color' => '#8b5cf6',
+                'skip_item_delete_confirm' => false
+            ];
+            // Ensure boolean type for the toggle after merging
+            $finalSettings = array_merge($defaults, $settings);
+            $finalSettings['skip_item_delete_confirm'] = filter_var($finalSettings['skip_item_delete_confirm'], FILTER_VALIDATE_BOOLEAN);
+            echo json_encode($finalSettings);
+        ?>;
+    </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -36,159 +50,9 @@ $username = $auth->getCurrentUsername();
             }
         })();
     </script>
-    <style>
-        .settings-section {
-            background-color: var(--color-surface-raised);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--color-border);
-        }
-        .settings-section h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--color-text);
-            margin-top: 0;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--color-border);
-        }
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-md) 0;
-            border-bottom: 1px solid var(--color-border-subtle);
-        }
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-        .settings-item label {
-            font-weight: 500;
-            color: var(--color-text-secondary);
-        }
-        /* Style for the color picker element */
-        .settings-color-picker {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-        .settings-color-indicator {
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-md);
-            border: 2px solid var(--color-border);
-            cursor: pointer;
-            transition: border-color var(--transition-speed);
-        }
-        .settings-color-indicator:hover {
-             border-color: var(--color-primary);
-        }
-        
-        /* Danger Button Style */
-        .btn-danger {
-            background-color: var(--color-danger);
-            color: white; /* Ensure text is readable */
-            border: 1px solid transparent;
-        }
-        .btn-danger:hover {
-            background-color: var(--color-danger-hover);
-            box-shadow: 0 0 8px 0 var(--color-danger-glow); /* Add glow similar to primary */
-        }
-        /* Ensure form inside settings-item aligns items */
-        .settings-item form {
-             display: flex;
-             align-items: center; /* Align button/input vertically if needed */
-             gap: var(--spacing-md);
-         }
-        .settings-item input[type="file"] {
-            /* Basic styling for file input if needed */
-            color: var(--color-text-secondary);
-        }
-        /* SweetAlert2 Customizations (Optional) */
-        .swal2-popup {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--color-surface);
-            color: var(--color-text);
-            border-radius: var(--radius-lg);
-        }
-        .swal2-title {
-            color: var(--color-text) !important;
-        }
-        .swal2-html-container {
-            color: var(--color-text-secondary) !important;
-        }
-        .swal2-confirm {
-            background-color: var(--color-primary) !important;
-            border-radius: var(--radius-md) !important;
-        }
-        .swal2-confirm:hover {
-            background-color: var(--color-primary-hover) !important;
-        }
-        .swal2-cancel {
-            background-color: var(--color-surface-raised) !important;
-            color: var(--color-text-secondary) !important;
-            border: 1px solid var(--color-border) !important;
-            border-radius: var(--radius-md) !important;
-        }
-        .swal2-cancel:hover {
-            background-color: var(--color-surface-hover) !important;
-            border-color: var(--color-border-hover) !important;
-        }
-        /* Toggle Switch */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--color-surface-raised);
-            transition: var(--transition-speed);
-            border-radius: var(--radius-md);
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: var(--transition-speed);
-            border-radius: 50%;
-        }
-        .slider.round {
-            border-radius: var(--radius-md);
-        }
-        .slider.round:before {
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: var(--color-primary);
-        }
-        input:focus + .slider {
-            box-shadow: 0 0 1px var(--color-primary);
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
+ </head>
+ <body>
+     <div class="container">
         <!-- Sidebar HTML structure (copied from index.php, modified for active state) -->
         <aside class="sidebar" id="sidebar">
             <div class="logo">
@@ -244,12 +108,12 @@ $username = $auth->getCurrentUsername();
 
             <!-- Appearance Section -->
             <section class="settings-section">
-                <h2>Appearance</h2>
+                <h1>Appearance</h1>
                 <div class="settings-item">
                     <label for="accent-color">Accent Color</label>
                     <div class="settings-color-picker theme-picker" title="Change Theme Color">
                         <div class="settings-color-indicator theme-color-indicator"></div>
-                        <input type="color" class="color-input" value="<?php echo defined('ACCENT_COLOR') ? ACCENT_COLOR : '#8b5cf6'; ?>" style="visibility: hidden; width: 0; height: 0; position: absolute;">
+                        <input type="color" class="color-input" value="<?php echo defined('ACCENT_COLOR') ? ACCENT_COLOR : '#8b5cf6'; ?>" style="visibility: hidden; width: 0; height: 0; position: absolute;" id="accentColorPicker">
                     </div>
                 </div>
                 <!-- Add more appearance settings here if needed -->
@@ -257,12 +121,12 @@ $username = $auth->getCurrentUsername();
 
             <!-- Data Section -->
             <section class="settings-section">
-                <h2>Data Management</h2>
+                <h1>Data Management</h1>
                 <div class="settings-item">
                     <label>Import Data from CSV</label>
                     <form id="import-form" action="import.php" method="post" enctype="multipart/form-data">
                         <input type="file" name="import_file" accept=".csv" required>
-                        <button type="submit" class="btn btn-secondary">Import & Replace Data</button>
+                        <button type="submit" class="btn btn-primary">Import & Replace Data</button>
                     </form>
                 </div>
                 <div style="margin-left: var(--spacing-md); margin-top: calc(-1 * var(--spacing-md)); /* Adjust alignment */ padding-bottom: var(--spacing-md); font-size: 0.85rem; color: var(--color-text-secondary);">
@@ -271,13 +135,13 @@ $username = $auth->getCurrentUsername();
                 </div>
                 <div class="settings-item">
                     <label>Export All Data</label>
-                    <a href="export.php" class="btn btn-secondary">Export as CSV</a>
+                    <a href="export.php" class="btn btn-primary">Export as CSV</a>
                 </div>
             </section>
 
             <!-- Danger Zone -->
             <section class="settings-section">
-                <h2>Danger Zone</h2>
+                <h1>Danger Zone</h1>
                 <div class="settings-item">
                     <label for="skipItemDeleteConfirmToggle">Skip Item Delete Confirmation</label>
                     <label class="toggle-switch">
@@ -289,7 +153,7 @@ $username = $auth->getCurrentUsername();
                     <i class="fas fa-info-circle"></i> If enabled, items on the 'All Items' page will be deleted immediately without a confirmation prompt.
                 </div>
                 <div class="settings-item">
-                    <label style="color: var(--color-danger);">Delete All Data</label>
+                    <label style="color: var(--color-danger);">Reset user data</label>
                     <form id="delete-form" action="delete_data.php" method="post">
                         <button type="submit" class="btn btn-danger">Delete All My Data</button>
                     </form>
@@ -304,43 +168,120 @@ $username = $auth->getCurrentUsername();
     <!-- Add SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Handle Import Confirmation
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorPicker = document.getElementById('accentColorPicker');
+            const skipItemDeleteConfirmToggle = document.getElementById('skipItemDeleteConfirmToggle');
+            const feedbackContainer = document.getElementById('feedback-message'); // Assuming you have a container for messages
+
+            // Helper function to update setting via API
+            async function updateSetting(key, value) {
+                try {
+                    const response = await fetch('/api/settings.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ setting_key: key, setting_value: value })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        // Optionally show brief success feedback
+                        console.log(`Setting '${key}' updated successfully.`);
+                        // You could use a small temporary message here instead of Swal
+                    } else {
+                        // Show error using Swal
+                        Swal.fire(
+                            'Error!',
+                            `Failed to update setting: ${result.message || 'Unknown server error'}`,
+                            'error'
+                        );
+                        // Revert UI if needed (might be complex)
+                    }
+                } catch (error) {
+                    console.error('Error updating setting:', error);
+                    Swal.fire(
+                        'Network Error!',
+                        'Failed to communicate with the server to update setting.',
+                        'error'
+                    );
+                }
+            }
+
+            // Initialize and handle Accent Color Picker
+            if (colorPicker) {
+                // Initialize from window.userSettings
+                const initialColor = window.userSettings.accent_color || '#8b5cf6'; // Use default if missing
+                colorPicker.value = initialColor;
+                // Apply initial color immediately (if theme.js doesn't already do it based on window.userSettings)
+                // document.documentElement.style.setProperty('--color-primary', initialColor); // Consider if theme.js handles this
+
+                // Save state via API on change (debounced)
+                let debounceTimer;
+                colorPicker.addEventListener('input', function() {
+                    const newColor = this.value;
+                    // Apply color immediately for visual feedback
+                    document.documentElement.style.setProperty('--color-primary', newColor);
+                    // Debounce API call
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        updateSetting('accent_color', newColor);
+                    }, 500); // Send update 500ms after user stops changing color
+                });
+            }
+
+            // Handle Skip Item Delete Confirmation Toggle
+            if (skipItemDeleteConfirmToggle) {
+                // Initialize toggle state from window.userSettings
+                const skipConfirm = window.userSettings.skip_item_delete_confirm || false; // Default false
+                skipItemDeleteConfirmToggle.checked = skipConfirm;
+
+                // Save state via API on change
+                skipItemDeleteConfirmToggle.addEventListener('change', function() {
+                    updateSetting('skip_item_delete_confirm', this.checked);
+                });
+            }
+
+            // Get the forms
             const importForm = document.getElementById('import-form');
+            const deleteForm = document.getElementById('delete-form');
+
+            // Add confirmation for Import Data form
             if (importForm) {
                 importForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Stop default submission
+                    event.preventDefault(); // Prevent default submission
                     Swal.fire({
-                        title: 'Confirm Import & Replace',
-                        html: "This will <strong>DELETE ALL</strong> your existing items, categories, locations, and tags before importing the data from the selected file.<br><br>Are you sure you want to proceed?",
+                        title: 'Are you sure?',
+                        html: "Importing will <strong>replace all</strong> your current items, categories, locations, and tags. This cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonText: 'Yes, Import & Replace!',
+                        confirmButtonText: 'Yes, import and replace!',
                         cancelButtonText: 'Cancel',
                         confirmButtonColor: 'var(--color-primary)',
                         cancelButtonColor: 'var(--color-surface-raised)'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // If confirmed, submit the form programmatically
-                            importForm.submit(); 
+                            importForm.submit();
                         }
                     });
                 });
             }
 
-            // Handle Delete Confirmation
-            const deleteForm = document.getElementById('delete-form');
+            // Add confirmation for Delete All Data form
             if (deleteForm) {
                 deleteForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Stop default submission
+                    event.preventDefault(); // Prevent default submission
                     Swal.fire({
-                        title: 'Delete All Data?',
-                        html: "Are you absolutely sure? This will delete all your items, categories, locations, and tags <strong>permanently</strong>.<br><br>This action cannot be undone.",
-                        icon: 'error', // Use error icon for high danger
+                        title: 'ARE YOU ABSOLUTELY SURE?',
+                        html: "This action will permanently delete <strong>ALL</strong> your data, including items, categories, locations, and tags. <strong style='color: var(--color-danger);'>This cannot be undone.</strong>",
+                        icon: 'error', // Use error icon for high severity
                         showCancelButton: true,
-                        confirmButtonText: 'Yes, Delete Everything!',
+                        confirmButtonText: 'Yes, DELETE EVERYTHING!',
                         cancelButtonText: 'Cancel',
-                        confirmButtonColor: 'var(--color-danger)',
+                        confirmButtonColor: 'var(--color-danger)', // Use danger color for confirm
                         cancelButtonColor: 'var(--color-surface-raised)'
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -351,35 +292,22 @@ $username = $auth->getCurrentUsername();
                 });
             }
 
-            // Handle Skip *Item* Delete Confirmation Toggle
-            const skipItemDeleteConfirmToggle = document.getElementById('skipItemDeleteConfirmToggle');
-            if (skipItemDeleteConfirmToggle) {
-                // Initialize toggle state from localStorage
-                const skipConfirm = localStorage.getItem('skipItemDeleteConfirm') === 'true';
-                skipItemDeleteConfirmToggle.checked = skipConfirm;
-
-                // Save state to localStorage on change
-                skipItemDeleteConfirmToggle.addEventListener('change', function() {
-                    localStorage.setItem('skipItemDeleteConfirm', this.checked);
-                });
-            }
-
-            // Display Feedback Messages from Session
+            // Display Feedback Messages from Session (Existing logic)
             <?php
             $successMessage = '';
-            if (isset($_SESSION['settings_success'])) {
-                $successMessage = json_encode($_SESSION['settings_success']);
-                unset($_SESSION['settings_success']);
+            if (isset($_SESSION['feedback_success'])) {
+                $successMessage = $_SESSION['feedback_success'];
+                unset($_SESSION['feedback_success']);
             }
             $errorMessage = '';
-            if (isset($_SESSION['settings_error'])) {
-                $errorMessage = json_encode($_SESSION['settings_error']);
-                unset($_SESSION['settings_error']);
+            if (isset($_SESSION['feedback_error'])) {
+                $errorMessage = $_SESSION['feedback_error'];
+                unset($_SESSION['feedback_error']);
             }
             ?>
 
             const successMsg = <?php echo $successMessage ?: 'null'; ?>;
-            const errorMsg = <?php echo $errorMessage ?: 'null'; ?>;
+            const errorMsg = <?php echo addslashes($errorMessage) ?: 'null'; ?>;
 
             if (successMsg) {
                 Swal.fire({

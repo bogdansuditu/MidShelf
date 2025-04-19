@@ -376,8 +376,12 @@ async function performDelete(id) {
 
 // Delete Item Function (from app.js - needed if called from items.php)
 async function deleteItem(id) {
-    // Check the setting from localStorage
-    const skipConfirm = localStorage.getItem('skipItemDeleteConfirm') === 'true';
+    // --- DEBUGGING --- 
+    console.log('window.userSettings on deleteItem call:', window.userSettings);
+    console.log('Value of skip_item_delete_confirm:', window.userSettings?.skip_item_delete_confirm);
+    // --- END DEBUGGING ---
+    // Check the setting from the globally injected user settings
+    const skipConfirm = window.userSettings?.skip_item_delete_confirm === true;
 
     if (skipConfirm) {
         // If setting is true, delete directly without prompting

@@ -27,6 +27,10 @@ $categories = $categoryModel->getCategories($userId);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <script>
+        // Make PHP user settings available to JavaScript
+        window.userSettings = <?php echo json_encode($_SESSION['user_settings'] ?? ['accent_color' => '#8b5cf6', 'skip_item_delete_confirm' => false]); ?>;
+    </script>
+    <script>
         // Apply sidebar state immediately before any rendering
         (function() {
             if (localStorage.getItem('sidebarCollapsed') === 'true') {

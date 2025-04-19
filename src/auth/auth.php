@@ -10,11 +10,12 @@ class Auth {
 
     public function login($username, $password) {
         try {
-            $stmt = $this->db->query(
+            // Fetch user details
+            $stmtUser = $this->db->query(
                 "SELECT id, username, password_hash FROM users WHERE username = ?",
                 [$username]
             );
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['password_hash'])) {
                 // Update last login
@@ -23,11 +24,31 @@ class Auth {
                     [$user['id']]
                 );
 
+                // Fetch user settings
+                $stmtSettings = $this->db->query(
+                    "SELECT setting_key, setting_value FROM user_settings WHERE user_id = ?",
+                    [$user['id']]
+                );
+                $settingsRaw = $stmtSettings->fetchAll(PDO::FETCH_KEY_PAIR); // Get key-value pairs
+
+                // Define default settings
+                $defaultSettings = [
+                    'accent_color' => '#8b5cf6', // Default purple
+                    'skip_item_delete_confirm' => false
+                ];
+
+                // Merge fetched settings with defaults (fetched overwrite defaults)
+                $userSettings = array_merge($defaultSettings, $settingsRaw);
+
+                // Ensure boolean conversion for the toggle setting
+                $userSettings['skip_item_delete_confirm'] = filter_var($userSettings['skip_item_delete_confirm'], FILTER_VALIDATE_BOOLEAN);
+
                 // Set session
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['last_activity'] = time();
-                
+                $_SESSION['user_settings'] = $userSettings; // Store combined settings
+
                 return true;
             }
             return false;
