@@ -351,6 +351,19 @@ $username = $auth->getCurrentUsername();
                 });
             }
 
+            // Handle Skip *Item* Delete Confirmation Toggle
+            const skipItemDeleteConfirmToggle = document.getElementById('skipItemDeleteConfirmToggle');
+            if (skipItemDeleteConfirmToggle) {
+                // Initialize toggle state from localStorage
+                const skipConfirm = localStorage.getItem('skipItemDeleteConfirm') === 'true';
+                skipItemDeleteConfirmToggle.checked = skipConfirm;
+
+                // Save state to localStorage on change
+                skipItemDeleteConfirmToggle.addEventListener('change', function() {
+                    localStorage.setItem('skipItemDeleteConfirm', this.checked);
+                });
+            }
+
             // Display Feedback Messages from Session
             <?php
             $successMessage = '';

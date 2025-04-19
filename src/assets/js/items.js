@@ -347,43 +347,58 @@ async function duplicateItem(id) {
     }
 }
 
+// Helper function for the actual item delete API call
+async function performDelete(id) {
+    try {
+        const response = await fetch(`/api/items.php?id=${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            location.reload(); // Just reload on success
+        } else {
+            const errorData = await response.json();
+            Swal.fire(
+                'Error!',
+                `Failed to delete item: ${errorData.message || 'Unknown error'}`, 
+                'error'
+            );
+        }
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        Swal.fire(
+            'Error!',
+            'An unexpected error occurred while deleting the item.', 
+            'error'
+        );
+    }
+}
+
 // Delete Item Function (from app.js - needed if called from items.php)
 async function deleteItem(id) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33', // Standard red for delete
-        cancelButtonColor: '#3085d6', // Standard blue for cancel
-        confirmButtonText: 'Yes, delete it!',
-        background: 'var(--color-surface-raised)', // Use CSS variables for theme consistency
-        color: 'var(--color-text)', // Use CSS variables
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                const response = await fetch(`/api/items.php?id=${id}`, {
-                    method: 'DELETE'
-                });
+    // Check the setting from localStorage
+    const skipConfirm = localStorage.getItem('skipItemDeleteConfirm') === 'true';
 
-                if (response.ok) {
-                    location.reload(); // Just reload on success
-                } else {
-                    const errorData = await response.json();
-                    Swal.fire(
-                        'Error!',
-                        `Failed to delete item: ${errorData.message || 'Unknown error'}`,
-                        'error'
-                    );
-                }
-            } catch (error) {
-                console.error('Error deleting item:', error);
-                Swal.fire(
-                    'Error!',
-                    'An unexpected error occurred while deleting the item.',
-                    'error'
-                );
+    if (skipConfirm) {
+        // If setting is true, delete directly without prompting
+        await performDelete(id);
+    } else {
+        // Otherwise, show the confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33', // Standard red for delete
+            cancelButtonColor: '#3085d6', // Standard blue for cancel
+            confirmButtonText: 'Yes, delete it!',
+            background: 'var(--color-surface-raised)', // Use CSS variables for theme consistency
+            color: 'var(--color-text)', // Use CSS variables
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // If confirmed in the dialog, perform the delete
+                await performDelete(id);
             }
-        }
-    });
+        });
+    }
 }
