@@ -20,7 +20,8 @@ $action = $_GET['action'] ?? 'list';
 
 // Handle tag filtering
 if (isset($_GET['tag'])) {
-    $_SESSION['selected_tag'] = $_GET['tag'];
+    // Sanitize tag before storing in session
+    $_SESSION['selected_tag'] = htmlspecialchars(strip_tags($_GET['tag']), ENT_QUOTES, 'UTF-8');
 } else if (isset($_GET['reset_tag'])) {
     unset($_SESSION['selected_tag']);
 }
@@ -148,7 +149,7 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                                 <?php foreach ($items as $item): ?>
                                     <tr>
                                         <td>
-                                            <a class="item-cell-link" href="javascript:void(0);" onclick="openItemModal(<?php echo $item['id']; ?>, 'edit')">
+                                            <a class="item-cell-link" href="javascript:void(0);" onclick="openItemModal(<?php echo htmlspecialchars((string)$item['id'], ENT_QUOTES, 'UTF-8'); ?>, 'edit')">
                                                 <div class="item-main-name"><?php echo htmlspecialchars($item['name']); ?></div>
                                                 <?php if ($item['description']): ?>
                                                     <div class="item-description"><?php echo htmlspecialchars(substr($item['description'], 0, 50)) . (strlen($item['description']) > 50 ? '...' : ''); ?></div>

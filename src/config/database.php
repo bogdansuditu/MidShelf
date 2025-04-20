@@ -30,7 +30,22 @@ class Database {
     public function query($sql, $params = []) {
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->execute($params);
+            
+            // Add type checking for parameters
+            foreach ($params as $key => $value) {
+                if (is_int($value)) {
+                    $type = PDO::PARAM_INT;
+                } elseif (is_bool($value)) {
+                    $type = PDO::PARAM_BOOL;
+                } elseif (is_null($value)) {
+                    $type = PDO::PARAM_NULL;
+                } else {
+                    $type = PDO::PARAM_STR;
+                }
+                $stmt->bindValue($key + 1, $value, $type);
+            }
+            
+            $stmt->execute();
             return $stmt;
         } catch (PDOException $e) {
             error_log("Query failed: " . $e->getMessage());

@@ -25,7 +25,8 @@ $locationModel = new Location();
 
 // Handle tag filtering
 if (isset($_GET['tag'])) {
-    $_SESSION['selected_tag'] = $_GET['tag'];
+    // Sanitize tag before storing in session
+    $_SESSION['selected_tag'] = htmlspecialchars(strip_tags($_GET['tag']), ENT_QUOTES, 'UTF-8');
 } else if (isset($_GET['reset_tag'])) {
     unset($_SESSION['selected_tag']);
 }

@@ -86,13 +86,20 @@ MidShelf/
    docker-compose exec web php /scripts/init_db.php
    ```
 
-4. **Access the application**
+4. **Set up data directory permissions**
+   ```bash
+   # For Synology NAS deployments, you might need to set the data directory permissions to 777
+   # This is safe in this case as the directory is only accessible from within the Docker container
+   chmod 777 /path/to/your/data/directory
+   ```
+
+5. **Access the application**
    Open your browser and navigate to [http://localhost:8080](http://localhost:8080)
 
-5. **Create a user account**
+6. **Create a user account**
    User accounts are managed through the command-line script:
    ```bash
-   docker-compose exec web php /scripts/manage_users.php add <username> <password>
+   docker-compose exec [container id] php /scripts/manage_users.php add <username> <password>
    ```
 
 ## Usage Guide
