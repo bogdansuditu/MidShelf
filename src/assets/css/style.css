@@ -282,7 +282,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 }
 
 .sidebar-section {
-    margin-top: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
 }
 
 .sidebar-section h3 {
@@ -907,6 +907,23 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     text-decoration: none;
 }
 
+.item-count {
+    position: absolute;
+    right: var(--spacing-lg);
+    top: var(--spacing-lg);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    font-weight: normal;
+}
+
+.total-items {
+    display: inline-block;
+    margin-left: var(--spacing-sm);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    font-weight: normal;
+}
+
 .card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
@@ -1485,7 +1502,7 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-xs);
+    gap: var(--spacing-lg);
     margin: var(--spacing-lg);
 }
 

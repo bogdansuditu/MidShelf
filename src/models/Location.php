@@ -8,12 +8,27 @@ class Location {
         $this->db = Database::getInstance();
     }
 
-    public function getLocations($userId) {
-        $sql = "SELECT * FROM locations WHERE user_id = ? ORDER BY name ASC";
+    public function getLocations($userId, $withCounts = false) {
+        if (!$withCounts) {
+            $sql = "SELECT * FROM locations WHERE user_id = ? ORDER BY name ASC";
+            try {
+                return $this->db->query($sql, [$userId])->fetchAll(PDO::FETCH_ASSOC);
+            } catch (Exception $e) {
+                error_log("Error fetching locations: " . $e->getMessage());
+                return [];
+            }
+        }
+
+        $sql = "SELECT l.*, COUNT(i.id) as item_count 
+               FROM locations l 
+               LEFT JOIN items i ON l.id = i.location_id 
+               WHERE l.user_id = ? 
+               GROUP BY l.id 
+               ORDER BY l.name ASC";
         try {
             return $this->db->query($sql, [$userId])->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            error_log("Error fetching locations: " . $e->getMessage());
+            error_log("Error fetching locations with counts: " . $e->getMessage());
             return [];
         }
     }

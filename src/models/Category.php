@@ -8,12 +8,27 @@ class Category {
         $this->db = Database::getInstance();
     }
 
-    public function getCategories($userId) {
-        $sql = "SELECT * FROM categories WHERE user_id = ? ORDER BY name ASC";
+    public function getCategories($userId, $withCounts = false) {
+        if (!$withCounts) {
+            $sql = "SELECT * FROM categories WHERE user_id = ? ORDER BY name ASC";
+            try {
+                return $this->db->query($sql, [$userId])->fetchAll(PDO::FETCH_ASSOC);
+            } catch (Exception $e) {
+                error_log("Error fetching categories: " . $e->getMessage());
+                return [];
+            }
+        }
+
+        $sql = "SELECT c.*, COUNT(i.id) as item_count 
+               FROM categories c 
+               LEFT JOIN items i ON c.id = i.category_id 
+               WHERE c.user_id = ? 
+               GROUP BY c.id 
+               ORDER BY c.name ASC";
         try {
             return $this->db->query($sql, [$userId])->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            error_log("Error fetching categories: " . $e->getMessage());
+            error_log("Error fetching categories with counts: " . $e->getMessage());
             return [];
         }
     }

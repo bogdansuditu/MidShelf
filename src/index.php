@@ -31,8 +31,11 @@ if (isset($_GET['tag'])) {
 $selectedTag = $_SESSION['selected_tag'] ?? null;
 
 $items = $itemModel->getItems($userId, null, 10, $selectedTag); // Pass null for categoryId and 10 for limit
-$categories = $categoryModel->getCategories($userId);
-$locations = $locationModel->getLocations($userId);
+$categories = $categoryModel->getCategories($userId, true); // Get categories with counts
+$locations = $locationModel->getLocations($userId, true); // Get locations with counts
+
+// Get total items count
+$totalItems = count($itemModel->getItems($userId));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -135,6 +138,7 @@ $locations = $locationModel->getLocations($userId);
                                     <div class="card-header">
                                         <i class="<?php echo htmlspecialchars($category['icon'] ?? 'fas fa-folder'); ?>" style="color: <?php echo htmlspecialchars($category['color'] ?? '#ccc'); ?>"></i>
                                         <h3><?php echo htmlspecialchars($category['name']); ?></h3>
+                                        <span class="item-count"><?php echo (int)$category['item_count']; ?> items</span>
                                     </div>
                                 </a>
                             <?php endforeach; ?>
@@ -160,6 +164,7 @@ $locations = $locationModel->getLocations($userId);
                                     <div class="card-header">
                                         <i class="fas fa-map-marker-alt"></i>
                                         <h3><?php echo htmlspecialchars($location['name']); ?></h3>
+                                        <span class="item-count"><?php echo (int)$location['item_count']; ?> items</span>
                                     </div>
                                     <?php if ($location['description']): ?>
                                         <div class="card-body">
@@ -180,7 +185,7 @@ $locations = $locationModel->getLocations($userId);
                 <!-- All Items Section -->
                 <section class="home-section">
                     <div class="sidebar-section">
-                        <h3>Most recent items</h3>
+                        <h3>Most recent items <span class="total-items">(<?php echo $totalItems; ?> total)</span></h3>
                     </div>
                     
                     <div class="table-container">
