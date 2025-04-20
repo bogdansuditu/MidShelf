@@ -6,7 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach submit handler only after DOM is loaded
     const itemForm = document.getElementById('itemForm');
     if (itemForm) {
-        itemForm.addEventListener('submit', handleItemSubmit);
+        itemForm.addEventListener('submit', (e) => {
+            // Get the clicked button's action
+            const clickedButton = e.submitter;
+            const action = clickedButton.getAttribute('data-action');
+            handleItemSubmit(e, action);
+        });
     }
 
     // Initial setup for tags and rating inputs (ensure elements exist first)
@@ -28,21 +33,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Modal Management ---
 
-async function openItemModal(itemId = null) {
+async function openItemModal(itemId = null, mode = 'add') {
     const modal = document.getElementById('itemModal');
     const form = document.getElementById('itemForm');
     const title = document.getElementById('itemModalTitle');
-    const submitButton = form.querySelector('button[type="submit"]');
+    const formActions = form.querySelector('.form-actions');
+    const addButtons = formActions.querySelector('.add-mode-buttons');
+    const editButtons = formActions.querySelector('.edit-mode-buttons');
 
     form.reset(); // Clear previous data
     resetTagsInput(); // Clear existing tag spans
     setRating(0); // Reset rating visually
     document.getElementById('tagsHidden').value = ''; // Clear hidden tags
     form.querySelector('input[name="id"]').value = ''; // Clear hidden ID
+    formActions.setAttribute('data-mode', mode); // Store mode in form actions
 
-    if (itemId) {
+    // Toggle button visibility based on mode
+    if (mode === 'edit') {
+        addButtons.style.display = 'none';
+        editButtons.style.display = 'block';
         title.textContent = 'Edit Item';
-        submitButton.textContent = 'Update Item';
+    } else {
+        addButtons.style.display = 'block';
+        editButtons.style.display = 'none';
+        title.textContent = 'Add Item';
+    }
+
+    // Load item data if in edit mode
+    if (mode === 'edit' && itemId) {
         try {
             const response = await fetch(`/api/items.php?id=${itemId}`);
             if (!response.ok) {
@@ -70,7 +88,6 @@ async function openItemModal(itemId = null) {
         }
     } else {
         title.textContent = 'Add Item';
-        submitButton.textContent = 'Add Item';
         // Ensure hidden ID is cleared for new items
         form.querySelector('input[name="id"]').value = ''; 
     }
@@ -81,20 +98,23 @@ async function openItemModal(itemId = null) {
 function closeItemModal() {
     const modal = document.getElementById('itemModal');
     modal.classList.remove('active');
+    location.reload(); // Refresh the page when modal is closed
 }
 
 // --- Form Submission ---
 
-async function handleItemSubmit(e) {
-    e.preventDefault();
-    const form = e.target;
+async function handleItemSubmit(event, action = 'save') {
+    event.preventDefault();
+    const form = event.target;
     const formData = new FormData(form);
+
+    // Extract form data
     const data = {
-        id: formData.get('id') || null, // Get ID from hidden input
+        id: formData.get('id') || null,
         name: formData.get('name'),
         description: formData.get('description'),
-        category_id: formData.get('category_id') || null, // Handle empty selection
-        location_id: formData.get('location_id') || null, // Handle empty selection
+        category_id: formData.get('category_id') || null,
+        location_id: formData.get('location_id') || null,
         tags: formData.get('tags') ? formData.get('tags').split(',') : [],
         rating: parseInt(formData.get('rating'), 10) || 0
     };
@@ -112,16 +132,38 @@ async function handleItemSubmit(e) {
         });
 
         if (response.ok) {
-            closeItemModal();
-            location.reload(); // Reload the page to see changes
-            // Future enhancement: Update table via JS instead of reload
+            // Show success message
+            Swal.fire({
+                title: 'Success!',
+                text: data.id ? 'Item updated successfully' : 'Item added successfully',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            // For add mode with save-and-add, clear name and keep modal open
+            if (!data.id && action === 'save-and-add') {
+                form.querySelector('#name').value = '';
+                form.querySelector('#name').focus();
+            } else {
+                // For update or normal save, close the modal
+                closeItemModal();
+            }
         } else {
             const errorData = await response.json();
-            alert('Error: ' + (errorData.message || 'Failed to save item.'));
+            Swal.fire({
+                title: 'Error!',
+                text: errorData.message || 'Failed to save item.',
+                icon: 'error'
+            });
         }
     } catch (error) {
         console.error('Error submitting item:', error);
-        alert('An error occurred while saving the item.');
+        Swal.fire({
+            title: 'Error!',
+            text: 'An error occurred while saving the item.',
+            icon: 'error'
+        });
     }
 }
 

@@ -114,7 +114,7 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                     <?php if ($selectedTag): ?>
                     <a href="?reset_tag=1" class="tag tag-selected" title="Click to clear filter"><?php echo htmlspecialchars($selectedTag); ?></a>
                     <?php endif; ?>
-                    <button class="btn btn-primary" onclick="openItemModal()">
+                    <button class="btn btn-primary" onclick="openItemModal(null, 'add')">
                         <i class="fas fa-plus"></i>
                         <span>Add Item</span>
                     </button>
@@ -148,7 +148,7 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                                 <?php foreach ($items as $item): ?>
                                     <tr>
                                         <td>
-                                            <a class="item-cell-link" href="javascript:void(0);" onclick="openItemModal(<?php echo $item['id']; ?>)">
+                                            <a class="item-cell-link" href="javascript:void(0);" onclick="openItemModal(<?php echo $item['id']; ?>, 'edit')">
                                                 <div class="item-main-name"><?php echo htmlspecialchars($item['name']); ?></div>
                                                 <?php if ($item['description']): ?>
                                                     <div class="item-description"><?php echo htmlspecialchars(substr($item['description'], 0, 50)) . (strlen($item['description']) > 50 ? '...' : ''); ?></div>
@@ -193,7 +193,7 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                                         </td>
                                         <td>
                                             <div class="table-actions">
-                                                <button class="btn-icon" onclick="openItemModal(<?php echo $item['id']; ?>)">
+                                                <button class="btn-icon" onclick="openItemModal(<?php echo $item['id']; ?>, 'edit')">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <button class="btn-icon" onclick="duplicateItem(<?php echo $item['id']; ?>)" title="Duplicate Item">
@@ -223,7 +223,11 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <?php include __DIR__ . '/components/item-form.php'; ?>
+            <?php 
+            // Initialize empty item for the form
+            $item = null;
+            include __DIR__ . '/components/item-form.php'; 
+            ?>
         </div>
     </div>
 

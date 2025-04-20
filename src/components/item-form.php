@@ -105,10 +105,14 @@ $locations = $locationModel->getLocations($userId);
         <input type="hidden" name="rating" id="ratingHidden" value="<?php echo $current_rating; ?>">
     </div>
 
-    <div class="form-actions">
+    <div class="form-actions" data-mode="add">
         <button type="button" id="cancelItemForm" class="btn btn-secondary">Cancel</button>
-        <button type="submit" class="btn btn-primary">
-            <?php echo $item ? 'Update Item' : 'Add Item'; ?>
-        </button>
+        <div class="add-mode-buttons">
+            <button type="submit" class="btn btn-primary" data-action="save-and-add">Save & Add New</button>
+            <button type="submit" class="btn btn-primary" data-action="save">Add Item</button>
+        </div>
+        <div class="edit-mode-buttons" style="display:none">
+            <button type="submit" class="btn btn-primary" data-action="save">Update</button>
+        </div>
     </div>
 </form>
