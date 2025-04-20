@@ -18,9 +18,7 @@ class Tag {
         $query = "
             SELECT DISTINCT t.id, t.name
             FROM tags t
-            JOIN items_tags it ON t.id = it.tag_id
-            JOIN items i ON it.item_id = i.id
-            WHERE i.user_id = ?
+            WHERE t.user_id = ?
             ORDER BY t.name ASC
         ";
         

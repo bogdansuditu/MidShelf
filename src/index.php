@@ -4,6 +4,7 @@ require_once __DIR__ . '/auth/auth.php';
 require_once __DIR__ . '/models/Item.php';
 require_once __DIR__ . '/models/Category.php';
 require_once __DIR__ . '/models/Location.php';
+require_once __DIR__ . '/models/Tag.php';
 
 $auth = new Auth();
 
@@ -30,9 +31,12 @@ if (isset($_GET['tag'])) {
 }
 $selectedTag = $_SESSION['selected_tag'] ?? null;
 
+// Get all models data
 $items = $itemModel->getItems($userId, null, 10, $selectedTag); // Pass null for categoryId and 10 for limit
 $categories = $categoryModel->getCategories($userId, true); // Get categories with counts
 $locations = $locationModel->getLocations($userId, true); // Get locations with counts
+$tagModel = new Tag();
+$tags = $tagModel->getTags($userId); // Get all user's tags
 
 // Get total items count
 $totalItems = count($itemModel->getItems($userId));
@@ -177,6 +181,28 @@ $totalItems = count($itemModel->getItems($userId));
                             <div class="empty-state">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <p>No locations found yet.</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </section>
+
+                <!-- Tags Section -->
+                <section class="home-section">
+                    <div class="sidebar-section">
+                        <h3>Tags</h3>
+                    </div>
+                    
+                    <div class="tags-grid">
+                        <?php if (!empty($tags)): ?>
+                            <?php foreach ($tags as $tag): ?>
+                                <a href="/items.php?tag=<?php echo urlencode($tag['name']); ?>" class="tag">
+                                    <?php echo htmlspecialchars($tag['name']); ?>
+                                </a>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="empty-state">
+                                <i class="fas fa-tags"></i>
+                                <p>No tags found yet.</p>
                             </div>
                         <?php endif; ?>
                     </div>

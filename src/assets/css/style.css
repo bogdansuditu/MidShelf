@@ -17,6 +17,7 @@
     /* Refined Spacing */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
+    --spacing-sml: 12px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
     --spacing-xl: 32px;
@@ -1431,8 +1432,8 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
 /* Tags */
 .tag {
     display: inline-block;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: 16px;
+    padding: var(--spacing-xs) var(--spacing-sml);
+    border-radius: 15px;
     background-color: var(--color-primary);
     color: white;
     font-size: 0.9em;
@@ -1498,6 +1499,32 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
         margin-bottom: 60px;
     }
 }
+/* Tags Grid Layout */
+.tags-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-lg);
+}
+
+/* Tags in the grid use the same styles as regular tags */
+.tags-grid .tag {
+    margin: 0; /* Override default tag margins since we're using gap */
+}
+
+.tags-grid .empty-state {
+    width: 100%;
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: var(--spacing-xl);
+}
+
+.tags-grid .empty-state i {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-tertiary);
+}
+
 /* Cards Grid Layout */
 .cards-grid {
     display: grid;
