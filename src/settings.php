@@ -283,6 +283,16 @@ $username = $auth->getCurrentUsername();
                     const result = await response.json();
 
                     if (response.ok && result.success) {
+                        // For accent color, set cookies that expire in 1 year
+                        if (key === 'accent_color') {
+                            const expiryDate = new Date();
+                            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+                            const variants = calculateColorVariants(value);
+                            document.cookie = `accent_color=${variants.primary}; expires=${expiryDate.toUTCString()}; path=/`;
+                            document.cookie = `accent_color_light=${variants.light}; expires=${expiryDate.toUTCString()}; path=/`;
+                            document.cookie = `accent_color_dark=${variants.dark}; expires=${expiryDate.toUTCString()}; path=/`;
+                            document.cookie = `accent_color_accent=${variants.accent}; expires=${expiryDate.toUTCString()}; path=/`;
+                        }
                         // Optionally show brief success feedback
                         console.log(`Setting '${key}' updated successfully.`);
                         // You could use a small temporary message here instead of Swal
@@ -293,7 +303,6 @@ $username = $auth->getCurrentUsername();
                             `Failed to update setting: ${result.message || 'Unknown server error'}`,
                             'error'
                         );
-                        // Revert UI if needed (might be complex)
                     }
                 } catch (error) {
                     console.error('Error updating setting:', error);

@@ -33,6 +33,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <?php
+    // Get accent colors from cookies or use defaults
+    $primaryColor = $_COOKIE['accent_color'] ?? '#8b5cf6';
+    $primaryLight = $_COOKIE['accent_color_light'] ?? '#a78bfa';
+    $primaryDark = $_COOKIE['accent_color_dark'] ?? '#7c3aed';
+    $accentColor = $_COOKIE['accent_color_accent'] ?? '#9333ea';
+    ?>
+    <style>
+        :root {
+            --color-primary: <?php echo htmlspecialchars($primaryColor); ?>;
+            --color-primary-light: <?php echo htmlspecialchars($primaryLight); ?>;
+            --color-primary-dark: <?php echo htmlspecialchars($primaryDark); ?>;
+            --color-accent: <?php echo htmlspecialchars($accentColor); ?>;
+        }
+    </style>
+    <?php
+    // Helper function to adjust color brightness
+    function adjustColorBrightness($hex, $steps) {
+        // Remove # if present
+        $hex = ltrim($hex, '#');
+        
+        // Convert to RGB
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        
+        // Adjust brightness
+        $r = max(0, min(255, $r + $steps));
+        $g = max(0, min(255, $g + $steps));
+        $b = max(0, min(255, $b + $steps));
+        
+        // Convert back to hex
+        return sprintf('#%02x%02x%02x', $r, $g, $b);
+    }
+    ?>
     <link rel="icon" href="/Midshelf.png" type="image/png">
     <style>
         .login-container {
