@@ -15,7 +15,7 @@ $userId = $auth->getCurrentUserId();
 $username = $auth->getCurrentUsername();
 
 $categoryModel = new Category();
-$categories = $categoryModel->getCategories($userId);
+$categories = $categoryModel->getCategories($userId, true); // Get categories with item counts
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -117,7 +117,7 @@ $categories = $categoryModel->getCategories($userId);
                                     <td>
                                         <div class="color-preview" style="background-color: <?php echo htmlspecialchars($category['color']); ?>"></div>
                                     </td>
-                                    <td>0</td>
+                                    <td><?php echo (int)$category['item_count']; ?></td>
                                     <td>
                                         <div class="table-actions">
                                             <button class="btn-icon" onclick="openCategoryModal(<?php echo $category['id']; ?>)">

@@ -15,7 +15,7 @@ $userId = $auth->getCurrentUserId();
 $username = $auth->getCurrentUsername();
 
 $locationModel = new Location();
-$locations = $locationModel->getLocations($userId);
+$locations = $locationModel->getLocations($userId, true); // Get locations with item counts
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,7 +113,7 @@ $locations = $locationModel->getLocations($userId);
                                         </div>
                                     </td>
                                     <td><?php echo htmlspecialchars($location['description'] ?? ''); ?></td>
-                                    <td>0</td>
+                                    <td><?php echo (int)$location['item_count']; ?></td>
                                     <td>
                                         <div class="table-actions">
                                             <button class="btn-icon" onclick="openLocationModal(<?php echo $location['id']; ?>)">
