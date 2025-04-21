@@ -140,6 +140,29 @@ $username = $auth->getCurrentUsername();
                 </div>
             </section>
 
+            <!-- Data Admin Section -->
+            <section class="settings-section">
+                <h1>Data Admin</h1>
+                <div class="settings-item">
+                    <label>Export Database</label>
+                    <a href="/api/database.php?action=export" class="btn btn-primary">Export as JSON</a>
+                </div>
+                <div style="margin-left: var(--spacing-md); margin-top: calc(-1 * var(--spacing-md)); padding-bottom: var(--spacing-md); font-size: 0.85rem; color: var(--color-text-secondary);">
+                    <i class="fas fa-info-circle"></i> Exports all database tables including users and settings.
+                </div>
+                <div class="settings-item">
+                    <label>Import Database</label>
+                    <form id="database-import-form" action="/api/database.php?action=import" method="post" enctype="multipart/form-data">
+                        <input type="file" name="backup_file" accept=".json" required>
+                        <button type="submit" class="btn btn-warning">Import Database Backup</button>
+                    </form>
+                </div>
+                <div style="margin-left: var(--spacing-md); margin-top: calc(-1 * var(--spacing-md)); padding-bottom: var(--spacing-md); font-size: 0.85rem; color: var(--color-text-secondary);">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--color-warning);"></i>
+                    <strong>Warning:</strong> This will completely replace ALL data in the database, including users and settings.
+                </div>
+            </section>
+
             <!-- Danger Zone -->
             <section class="settings-section">
                 <h1>Danger Zone</h1>
@@ -170,6 +193,77 @@ $username = $auth->getCurrentUsername();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Handle database import form
+            const databaseImportForm = document.getElementById('database-import-form');
+            if (databaseImportForm) {
+                databaseImportForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    
+                    Swal.fire({
+                        title: 'Are you absolutely sure?',
+                        html: `<div style="text-align: left;">
+                            <p><strong>Warning:</strong> This action will:</p>
+                            <ul style="margin-top: 0.5em;">
+                                <li>Delete ALL existing data from the database</li>
+                                <li>Replace ALL users and their settings</li>
+                                <li>Reset ALL auto-increment counters</li>
+                            </ul>
+                            <p style="margin-top: 1em;">This action cannot be undone!</p>
+                            </div>`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, replace everything',
+                        cancelButtonText: 'Cancel',
+                        confirmButtonColor: 'var(--color-danger)',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading state
+                            Swal.fire({
+                                title: 'Importing Database...',
+                                html: 'Please do not close this window.',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                showConfirmButton: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            const formData = new FormData(databaseImportForm);
+                            fetch('/api/database.php?action=import', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Database has been restored. You will be logged out.',
+                                        icon: 'success',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        allowEnterKey: false,
+                                    }).then(() => {
+                                        window.location.href = '/login.php';
+                                    });
+                                } else {
+                                    throw new Error(data.message || 'Import failed');
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire(
+                                    'Error!',
+                                    error.message || 'Failed to import database',
+                                    'error'
+                                );
+                            });
+                        }
+                    });
+                });
+            }
             const colorPicker = document.getElementById('accentColorPicker');
             const skipItemDeleteConfirmToggle = document.getElementById('skipItemDeleteConfirmToggle');
             const feedbackContainer = document.getElementById('feedback-message'); // Assuming you have a container for messages
