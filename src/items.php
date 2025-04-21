@@ -131,6 +131,7 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                                 <th>Name</th>
                                 <th>Category</th>
                                 <th>Location</th>
+                                <th>Link</th>
                                 <th>Rating</th>
                                 <th>Tags</th>
                                 <th>Actions</th>
@@ -139,7 +140,7 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                         <tbody>
                             <?php if (empty($items)): ?>
                                 <tr>
-                                    <td colspan="6" class="empty-state">
+                                    <td colspan="7" class="empty-state">
                                         <div class="empty-state-content">
                                             <i class="fas fa-box-open"></i>
                                             <p>No items found in this view.</p>
@@ -171,6 +172,15 @@ $items = $itemModel->getItems($userId, $categoryId, null, $selectedTag);
                                                 <div class="location-name">
                                                     <i class="fas fa-map-marker-alt"></i>
                                                     <span><?php echo htmlspecialchars($item['location_name']); ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($item['link'])): ?>
+                                                <div class="item-link">
+                                                    <a href="<?php echo htmlspecialchars($item['link']); ?>" target="_blank" rel="noopener noreferrer" class="accent-link">
+                                                        <i class="fa-solid fa-link" title="Open link"></i>
+                                                    </a>
                                                 </div>
                                             <?php endif; ?>
                                         </td>

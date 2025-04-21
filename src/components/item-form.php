@@ -68,6 +68,13 @@ $locations = $locationModel->getLocations($userId);
     </div>
 
     <div class="form-group">
+        <label for="link">Link (optional)</label>
+        <input type="url" id="link" name="link" class="form-control"
+               value="<?php echo $item ? htmlspecialchars($item['link']) : ''; ?>"
+               placeholder="https://...">
+    </div>
+
+    <div class="form-group">
         <label for="tags">Tags</label>
         <div class="tags-input" id="tagsInput">
             <?php if ($item && !empty($item['tags'])): ?>

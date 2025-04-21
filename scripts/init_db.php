@@ -57,12 +57,13 @@ try {
         description TEXT,
         category_id INTEGER,
         location_id INTEGER,
-        rating INTEGER CHECK(rating BETWEEN 1 AND 5),
+        link TEXT,
+        rating INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (category_id) REFERENCES categories(id),
-        FOREIGN KEY (location_id) REFERENCES locations(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+        FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE SET NULL
     )');
 
     // Create items_tags table (many-to-many relationship)

@@ -223,6 +223,7 @@ $totalItems = count($itemModel->getItems($userId));
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Location</th>
+                                    <th>Link</th>
                                     <th>Rating</th>
                                     <th>Tags</th>
                                 </tr>
@@ -249,6 +250,15 @@ $totalItems = count($itemModel->getItems($userId));
                                                 <div class="location-name">
                                                     <i class="fas fa-map-marker-alt"></i>
                                                     <span><?php echo htmlspecialchars($item['location_name']); ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($item['link'])): ?>
+                                                <div class="item-link">
+                                                    <a href="<?php echo htmlspecialchars($item['link']); ?>" target="_blank" rel="noopener noreferrer" class="accent-link">
+                                                        <i class="fa-solid fa-link" title="Open link"></i>
+                                                    </a>
                                                 </div>
                                             <?php endif; ?>
                                         </td>

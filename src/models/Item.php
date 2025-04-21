@@ -98,17 +98,22 @@ class Item {
             $sql = "
                 INSERT INTO items (
                     user_id, name, description, category_id, 
-                    location_id, rating, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    location_id, link, rating, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             ";
             
+            // Ensure rating is between 0 and 5
+            $rating = isset($data['rating']) ? intval($data['rating']) : 0;
+            $rating = max(0, min(5, $rating));
+
             $stmt = $this->db->query($sql, [
                 $data['user_id'],
                 $data['name'],
                 $data['description'],
                 $data['category_id'],
                 $data['location_id'],
-                $data['rating']
+                $data['link'] ?? null,
+                $rating ?? 0
             ]);
 
             $itemId = $this->db->getConnection()->lastInsertId();
@@ -159,7 +164,7 @@ class Item {
             $sql = "
                 UPDATE items 
                 SET name = ?, description = ?, category_id = ?,
-                    location_id = ?, rating = ?, updated_at = CURRENT_TIMESTAMP
+                    location_id = ?, link = ?, rating = ?, updated_at = CURRENT_TIMESTAMP
                 WHERE id = ? AND user_id = ?
             ";
             
@@ -168,7 +173,8 @@ class Item {
                 $data['description'],
                 $data['category_id'],
                 $data['location_id'],
-                $data['rating'],
+                $data['link'] ?? null,
+                isset($data['rating']) ? max(0, min(5, intval($data['rating']))) : 0,
                 $id,
                 $data['user_id']
             ]);
@@ -250,6 +256,7 @@ class Item {
                 i.description, 
                 c.name as category_name, 
                 l.name as location_name, 
+                i.link,
                 i.rating, 
                 GROUP_CONCAT(t.name) as tags, 
                 i.created_at, 

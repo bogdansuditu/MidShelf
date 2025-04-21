@@ -74,6 +74,7 @@ async function openItemModal(itemId = null, mode = 'add') {
             form.querySelector('#description').value = item.description || '';
             form.querySelector('#category').value = item.category_id || '';
             form.querySelector('#location').value = item.location_id || '';
+            form.querySelector('#link').value = item.link || '';
             setRating(item.rating || 0); // Set rating value and update stars
 
             // Populate tags
@@ -115,8 +116,9 @@ async function handleItemSubmit(event, action = 'save') {
         description: formData.get('description'),
         category_id: formData.get('category_id') || null,
         location_id: formData.get('location_id') || null,
+        link: formData.get('link') || null,
         tags: formData.get('tags') ? formData.get('tags').split(',') : [],
-        rating: parseInt(formData.get('rating'), 10) || 0
+        rating: formData.get('rating') ? parseInt(formData.get('rating'), 10) : 0
     };
 
     const method = data.id ? 'PUT' : 'POST';

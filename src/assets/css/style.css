@@ -1210,6 +1210,44 @@ html.sidebar-collapsed-root .sidebar .sidebar-item.active i {
     gap: var(--spacing-xs);
 }
 
+/* Location name */
+.location-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+}
+
+/* Item link */
+.item-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.accent-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--color-primary-light);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.accent-link:hover {
+    background-color: var(--color-surface-raised);
+    transform: scale(1.1);
+    color: var(--color-primary);
+}
+
+.accent-link i {
+    font-size: 1.1em;
+}
+
 .category-name,
 .location-name {
     display: flex;

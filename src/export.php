@@ -30,7 +30,7 @@ $output = fopen('php://output', 'w');
 fputs($output, "\xEF\xBB\xBF"); 
 
 // Write CSV header
-$header = ['name', 'description', 'category_name', 'location_name', 'rating', 'tags', 'created_at', 'updated_at'];
+$header = ['name', 'description', 'category_name', 'location_name', 'link', 'rating', 'tags', 'created_at', 'updated_at'];
 fputcsv($output, $header);
 
 // Write item rows
@@ -48,6 +48,7 @@ if (!empty($items)) {
             $item['description'] ?? '',
             $item['category_name'] ?? '',
             $item['location_name'] ?? '',
+            $item['link'] ?? '',
             $item['rating'] ?? 0,
             $cleanedTagsString, // Use cleaned tags string
             $item['created_at'] ?? '',
