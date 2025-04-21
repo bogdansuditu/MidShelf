@@ -93,7 +93,10 @@ html.sidebar-collapsed-root .container {
     transition: all var(--transition-speed) var(--transition-timing);
     padding: var(--spacing-lg);
     border-right: 1px solid var(--color-border);
-    position: relative;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
     box-shadow: var(--shadow-lg);
     background: linear-gradient(
         to bottom right,
