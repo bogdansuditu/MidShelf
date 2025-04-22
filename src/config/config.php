@@ -6,7 +6,7 @@ define('APP_NAME', 'MidShelf');
 define('APP_VERSION', '1.0.0');
 
 // Authentication settings
-define('SESSION_DURATION', 3600); // 1 hour
+define('SESSION_DURATION', 2592000); // 30 days
 define('MIN_PASSWORD_LENGTH', 8);
 
 // Application settings
